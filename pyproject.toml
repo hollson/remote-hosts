@@ -1,0 +1,24 @@
+[project]
+name = "remote-hosts"
+version = "0.1.0"
+requires-python = ">=3.8"
+authors = [
+  { name="Hollson", email="hollson@qq.com" }
+]
+description = "A lightweight SSH remote host management tool for managing and connecting to remote hosts."
+readme = "README.md"
+urls = { Homepage = "https://github.com/hollson/remote-hosts" }
+license = "MIT"
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "Operating System :: OS Independent",
+  "Intended Audience :: Developers",
+  "Intended Audience :: System Administrators",
+  "Topic :: System :: Systems Administration",
+  "Topic :: Utilities",
+]
+keywords = ["ssh", "remote-host", "cli-tool"]
+dependencies = []
+
+[project.scripts]
+remote_hosts = "remote_hosts.cli:main"

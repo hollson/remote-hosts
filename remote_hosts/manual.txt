@@ -1,0 +1,35 @@
+SSH Remote Host Management Tool - Operation Manual
+
+Introduction:
+  remote_hosts is a simple and easy-to-use SSH remote host management tool that helps users quickly connect to remote servers.
+
+Configuration File:
+  Location: ~/.remote_hosts.json
+  Format: JSON
+  Example:
+     [
+       {"id": 1, "host": "example.com", "port": 22, "user": "root", "key": "~/.ssh/id_rsa", "os": "ubuntu22.04", "arch": "x86_64", "region": "beijing", "mark": "example"},
+       {"id": 2, "host": "172.16.1.1", "user": "root", "mark": "example"}
+     ]
+
+  Field Description:
+     id      Integer, required, unique host identifier
+     host    String, required, host address (domain or IP)
+     port    Integer, optional, default 22, SSH port
+     user    String, required, login username
+     key     String, optional, SSH private key file path
+     os      String, optional, default "-", operating system type
+     arch    String, optional, default "-", system architecture
+     region  String, optional, default "-", host region
+     mark    String, optional, default "-", host remark
+
+
+SSH Key Configuration:
+  1. Generate SSH key pair:
+     ssh-keygen -t rsa -b 4096 -C "your_email@example.com"
+
+  2. Add public key to remote host:
+     ssh-copy-id user@hostname
+
+  3. Specify private key path in configuration file:
+     {"id": 1, "host": "example.com", "user": "root", "key": "~/.ssh/id_rsa"}
