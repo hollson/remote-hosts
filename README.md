@@ -1,22 +1,20 @@
-<h1 style="display: flex; justify-content: space-between; align-items: flex-end;">
-Remote-Hosts
-<span style="font-size:18px; font-weight: normal;"><a href="README.md">English</a>｜<a href="README_zh.md">中文</a></span>
-</h1>
-
-<div><a href="https://pypi.org/project/remote-hosts/">
-<img src="https://img.shields.io/pypi/v/remote-hosts.svg?style=flat-square" alt="PyPI Version"></a><a href="https://pypi.org/project/remote-hosts/"><img src="https://img.shields.io/pypi/pyversions/remote-hosts.svg?style=flat-square" alt="Python Versions"></a><a href="LICENSE"><img src="https://img.shields.io/github/license/hollson/remote-hosts.svg?style=flat-square" alt="License"></a><a href="https://github.com/hollson/remote-hosts/stargazers"><img src="https://img.shields.io/github/stars/hollson/remote-hosts.svg?style=flat-square" alt="Stars"></a></div></div>
-A lightweight and efficient SSH remote host management tool that makes your remote connections simpler and more convenient.
-
-
-
-**Features :**
-
-- 📋 **Intuitive host list**: Display all configured remote host information in a table format
-- ✏️ **Convenient configuration editing**: Use the system default editor to quickly modify host configurations
-- 🎨 **Beautiful terminal output**: Colorful table display for enhanced visual experience
-- 🔧 **Intelligent configuration management**: Automatically create sample configuration files for quick start
-- 📍 **Multi-dimensional host information**: Support recording detailed information such as host operating system, architecture, location, etc.
-
+<div align="center">
+<h1>Remote Hosts</h1>
+<a href="https://pypi.org/project/remote-hosts/">
+<img src="https://img.shields.io/pypi/v/remote-hosts.svg?style=flat-square" alt="PyPI Version"></a>
+<a href="https://pypi.org/project/remote-hosts/"><img src="https://img.shields.io/pypi/pyversions/remote-hosts.svg?style=flat-square" alt="Python Versions"></a>
+<a href="#">
+<img src="https://img.shields.io/badge/SSH-2.0-blue?style=flat-square" alt="SSH Protocol"></a>
+<a href="#">
+<img src="https://img.shields.io/badge/Remote-Management-green?style=flat-square" alt="Remote Management"></a>
+<a href="LICENSE"><img src="https://img.shields.io/github/license/hollson/remote-hosts.svg?style=flat-square" alt="License"></a>
+<a href="https://github.com/hollson/remote-hosts/stargazers"><img src="https://img.shields.io/github/stars/hollson/remote-hosts.svg?style=flat-square" alt="Stars"></a>
+<a href="#"><img src="https://img.shields.io/badge/Lightweight-Efficient-purple?style=flat-square" alt="Lightweight"></a>
+<br/>
+<b>A lightweight and efficient SSH remote host management tool that makes your remote connections simpler and more convenient</b>
+<br/>
+<a href="README.md">English</a> | <a href="README_zh.md">中文</a>
+</div> 
 
 
 <br/>

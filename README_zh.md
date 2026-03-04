@@ -1,24 +1,20 @@
-<h1 style="display: flex; justify-content: space-between; align-items: flex-end;">
-Remote-Hosts
-<span style="font-size:18px; font-weight: normal;"><a href="README.md">English</a>｜<a href="README_zh.md">中文</a></span>
-</h1>
-
-<div><a href="https://pypi.org/project/remote-hosts/">
-<img src="https://img.shields.io/pypi/v/remote-hosts.svg?style=flat-square" alt="PyPI Version"></a><a href="https://pypi.org/project/remote-hosts/"><img src="https://img.shields.io/pypi/pyversions/remote-hosts.svg?style=flat-square" alt="Python Versions"></a><a href="LICENSE"><img src="https://img.shields.io/github/license/hollson/remote-hosts.svg?style=flat-square" alt="License"></a><a href="https://github.com/hollson/remote-hosts/stargazers"><img src="https://img.shields.io/github/stars/hollson/remote-hosts.svg?style=flat-square" alt="Stars"></a></div></div>
-一个轻量级、高效的SSH远程主机管理工具，让您的远程连接更加简单便捷。
-
-
-
-**功能特点 :**
-
-- 📋 **直观的主机列表**：以表格形式展示所有已配置的远程主机信息
-- ✏️ **便捷的配置编辑**：使用系统默认编辑器快速修改主机配置
-- 🎨 **美观的终端输出**：彩色表格展示，提升视觉体验
-- 🔧 **智能配置管理**：自动创建示例配置文件，方便快速上手
-- 📍 **多维度主机信息**：支持记录主机的操作系统、架构、位置等详细信息
-
-
-
+<div align="center">
+<h1>Remote Hosts</h1>
+<a href="https://pypi.org/project/remote-hosts/">
+<img src="https://img.shields.io/pypi/v/remote-hosts.svg?style=flat-square" alt="PyPI Version"></a>
+<a href="https://pypi.org/project/remote-hosts/"><img src="https://img.shields.io/pypi/pyversions/remote-hosts.svg?style=flat-square" alt="Python Versions"></a>
+<a href="#">
+<img src="https://img.shields.io/badge/SSH-2.0-blue?style=flat-square" alt="SSH Protocol"></a>
+<a href="#">
+<img src="https://img.shields.io/badge/Remote-Management-green?style=flat-square" alt="Remote Management"></a>
+<a href="LICENSE"><img src="https://img.shields.io/github/license/hollson/remote-hosts.svg?style=flat-square" alt="License"></a>
+<a href="https://github.com/hollson/remote-hosts/stargazers"><img src="https://img.shields.io/github/stars/hollson/remote-hosts.svg?style=flat-square" alt="Stars"></a>
+<a href="#"><img src="https://img.shields.io/badge/Lightweight-Efficient-purple?style=flat-square" alt="Lightweight"></a>
+<br/>
+<b>一个轻量级、高效的SSH远程主机管理工具，让您的远程连接更加简单便捷</b>
+<br/>
+<a href="README.md">English</a> | <a href="README_zh.md">中文</a>
+</div> 
 <br/>
 
 
