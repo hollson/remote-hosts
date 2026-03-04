@@ -6,7 +6,7 @@ import sys
 import subprocess
 from remote_hosts.i18n import _, LANG
 
-__version__ = "0.1.0"
+__version__ = "0.1.1"
 
 class Color:
     RED = '\033[91m'
@@ -200,14 +200,15 @@ def show_manual():
     """Show operation manual"""
     # Select manual file based on language
     manual_file = 'manual_zh.txt' if LANG == 'zh' else 'manual.txt'
-    manual_path = os.path.join(os.path.dirname(__file__), manual_file)
     try:
-        with open(manual_path, 'r', encoding='utf-8') as file:
-            content = file.read()
-            print(content)
-    except FileNotFoundError:
-        print(f"{Color.RED}{_('manual_not_found', path=manual_path)}{Color.END}")
+        import pkgutil
+        content = pkgutil.get_data('remote_hosts', manual_file)
+        if content:
+            print(content.decode('utf-8'))
+        else:
+            print(f"{Color.RED}{_('manual_not_found', path=manual_file)}{Color.END}")
     except Exception as e:
+        print(f"{Color.RED}{_('manual_not_found', path=manual_file)}{Color.END}")
         print(f"{Color.RED}{_('manual_error', error=e)}{Color.END}")
 
 def edit_config(config_path, editor=None):
@@ -263,6 +264,12 @@ def main():
     """Main function"""
     # Configuration file path
     config_path = "~/.remote_hosts.json"
+    
+    # Initialize configuration file if not exists
+    if not os.path.exists(os.path.expanduser(config_path)):
+        config = Config(config_path)
+        config._create_sample()
+        print(f"{Color.BLUE} {_('init_config')}{Color.END}")
     
     # Parse command line arguments manually
     args = sys.argv[1:]
@@ -341,6 +348,29 @@ def main():
         # Invalid argument, show help information
         print(_('usage'))
         print(_('invalid_args'))
+
+def init_config():
+    """Initialize configuration file during installation"""
+    config_path = "~/.remote_hosts.json"
+    config = Config(config_path)
+    # Create sample configuration if not exists
+    if not os.path.exists(os.path.expanduser(config_path)):
+        config._create_sample()
+        print(_('init_config'))
+
+class InitConfigCommand:
+    """Distutils command to initialize configuration file"""
+    description = "Initialize configuration file"
+    user_options = []
+    
+    def initialize_options(self):
+        pass
+    
+    def finalize_options(self):
+        pass
+    
+    def run(self):
+        init_config()
 
 if __name__ == "__main__":
     main()

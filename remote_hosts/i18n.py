@@ -25,7 +25,7 @@ LANG = get_system_language()
 TEXT = {
     'zh': {
         'config_error_array': '配置文件错误：主机列表必须是数组格式',
-        'init_config': '已初始化配置文件，请执行 remote_hosts -e 进行编辑',
+        'init_config': '已初始化配置文件: ~/.remote_hosts.json',
         'config_error_json': '配置文件错误，执行 remote_hosts -e 进行修复... ',
         'host_config_error': '主机配置错误：ID、主机名和用户名不能为空',
         'duplicate_host_id': '重复的主机ID: {id}, 请检查配置文件',
@@ -70,7 +70,7 @@ TEXT = {
     },
     'en': {
         'config_error_array': 'Configuration error: Host list must be in array format',
-        'init_config': 'Configuration file initialized, please run remote_hosts -e to edit',
+        'init_config': 'Configuration file initialized: ~/.remote_hosts.json',
         'config_error_json': 'Configuration file error, run remote_hosts -e to fix... ',
         'host_config_error': 'Host configuration error: ID, host and user cannot be empty',
         'duplicate_host_id': 'Duplicate host ID: {id}, please check configuration file',
