@@ -265,16 +265,15 @@ def main():
     # Configuration file path
     config_path = "~/.remote_hosts.json"
     
-    # Initialize configuration file if not exists
-    if not os.path.exists(os.path.expanduser(config_path)):
-        config = Config(config_path)
-        config._create_sample()
-        print(f"{Color.BLUE} {_('init_config')}{Color.END}")
-    
     # Parse command line arguments manually
     args = sys.argv[1:]
     
     if not args or args[0] in ['-l', '--list']:
+        # Initialize configuration file if not exists
+        if not os.path.exists(os.path.expanduser(config_path)):
+            config = Config(config_path)
+            config._create_sample()
+            print(f"{Color.BLUE} {_('init_config')}{Color.END}")
         # No arguments or -l/--list, show host list
         hosts = load_hosts(config_path)
         print_hosts(hosts, config_path)

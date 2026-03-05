@@ -41,6 +41,7 @@ remote-hosts -v
 ```bash
 rm $HOME/.remote_hosts.json
 pip uninstall remote-hosts -y
+rm -rf remote_hosts.egg-info dist
 ```
 <br/>
 
