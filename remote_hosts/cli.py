@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-
 import os
 import json
 import sys
@@ -8,6 +7,7 @@ import shutil
 from remote_hosts.i18n import _, LANG
 
 __version__ = "0.1.1"
+
 
 class Color:
     RED = '\033[91m'
@@ -18,12 +18,13 @@ class Color:
     END = '\033[0m'
     BOLD = '\033[1m'
 
+
 class Config:
     """Configuration management class for loading and validating configuration files"""
     def __init__(self, config_path):
         self.config_path = os.path.expanduser(config_path)
         self.hosts = []
-    
+
     def load(self):
         """Load configuration file"""
         try:
@@ -33,7 +34,6 @@ class Config:
                     hosts_data = data['hosts']
                 else:
                     hosts_data = data
-                
                 if not isinstance(hosts_data, list):
                     print(f"{Color.RED}{_('config_error_array')}{Color.END}")
                     exit(1)
@@ -45,7 +45,6 @@ class Config:
         except json.JSONDecodeError:
             print(f"{Color.RED}{_('config_error_json')}{Color.END}")
             exit(1)
-        
         return self.hosts
     
     def _validate_and_load_hosts(self, hosts_data):
@@ -54,16 +53,13 @@ class Config:
             host_id = host_data.get('id')
             host_name = host_data.get('host')
             user_name = host_data.get('user')
-            
             if host_id is None or not host_name or not user_name:
                 print(f"{Color.RED}{_('host_config_error')}{Color.END}")
                 exit(1)
-            
             if host_id in id_set:
                 print(f"{Color.RED}{_('duplicate_host_id', id=host_id)}{Color.END}")
                 exit(1)
             id_set.add(host_id)
-            
             self.hosts.append(host_data)
     
     def _create_sample(self):
@@ -76,17 +72,17 @@ class Config:
         with open(self.config_path, 'w', encoding='utf-8') as file:
             json.dump(sample_data, file, indent='\t', ensure_ascii=False)
 
+
 def load_hosts(config_path):
     """Load hosts from configuration file"""
     config = Config(config_path)
     return config.load()
 
+
 def print_hosts(hosts, config_path):
     """Print host list in table format"""
-    # Prepare table data
     header_labels = [_('header_id'), _('header_host'), _('header_user'), _('header_os'), _('header_arch'), _('header_region'), _('header_mark')]
     headers = [f"{Color.BOLD}{Color.BLUE}{label}{Color.END}" for label in header_labels]
-    
     rows = []
     for host in hosts:
         try:
@@ -107,11 +103,9 @@ def print_hosts(hosts, config_path):
                     region_info,
                     mark_info
                 ])
-            
         except KeyError:
             print(f"{Color.RED}{_('host_info_missing')}{Color.END}")
             exit(1)
-    
     if rows:
         def get_clean_length(s):
             import re
@@ -130,10 +124,8 @@ def print_hosts(hosts, config_path):
                 col_widths[i] = max(col_widths[i], get_clean_length(cell))
         
         col_widths = [max(width + 4, 10) for width in col_widths]
-        
         top_border = '┌' + '┬'.join(['─' * width for width in col_widths]) + '┐'
         print(top_border)
-        
         header_row = '│'
         for header, width in zip(headers, col_widths):
             clean_len = get_clean_length(header)
@@ -141,18 +133,14 @@ def print_hosts(hosts, config_path):
             right_pad = width - clean_len - left_pad
             header_row += ' ' * left_pad + header + ' ' * right_pad + '│'
         print(header_row)
-        
         middle_border = '├' + '┼'.join(['─' * width for width in col_widths]) + '┤'
         print(middle_border)
-        
         for i, row in enumerate(rows):
             data_row = '│'
             for cell, width in zip(row, col_widths):
                 clean_len = get_clean_length(cell)
-                
                 import re
                 clean_content = re.sub(r'\x1B\[[0-9;]*m', '', cell)
-                
                 if clean_content == '-':
                     left_pad = (width - clean_len) // 2
                     right_pad = width - clean_len - left_pad
@@ -161,15 +149,14 @@ def print_hosts(hosts, config_path):
                     right_pad = width - clean_len
                     data_row += cell + ' ' * right_pad + '│'
             print(data_row)
-            
             if i < len(rows) - 1:
                 row_separator = '├' + '┼'.join(['─' * width for width in col_widths]) + '┤'
                 print(row_separator)
-        
         bottom_border = '└' + '┴'.join(['─' * width for width in col_widths]) + '┘'
         print(bottom_border)
     else:
         print(f"{Color.RED}{_('all_rows_empty')}{Color.END}")
+
 
 def show_manual():
     """Show operation manual"""
@@ -185,13 +172,13 @@ def show_manual():
         print(f"{Color.RED}{_('manual_not_found', path=manual_file)}{Color.END}")
         print(f"{Color.RED}{_('manual_error', error=e)}{Color.END}")
 
+
 def edit_config(config_path, editor=None):
     """Edit configuration file"""
     config_path = os.path.expanduser(config_path)
     if not os.path.exists(config_path):
         config = Config(config_path)
         config._create_sample()
-    
     if not editor:
         print(f"{Color.BOLD}{Color.BLUE}{_('select_editor')}\n  1. default \t{_('editor_default')}\n  2. vi \t{_('editor_vi')}\n  3. vim \t{_('editor_vim')}\n  4. nano \t{_('editor_nano')}\n  5. code \t{_('editor_code')}{Color.END}")
         try:
@@ -221,7 +208,6 @@ def edit_config(config_path, editor=None):
         except ValueError:
             print(f"{Color.RED}{_('invalid_input')}{Color.END}")
             exit(1)
-    
     try:
         if ' ' in editor:
             full_command = f"{editor} {config_path}"
@@ -239,6 +225,7 @@ def edit_config(config_path, editor=None):
         print(f"{Color.RED}{_('editor_not_found', editor=editor)}{Color.END}")
         edit_config(config_path)
 
+
 def main():
     """Main function"""
     config_path = "~/.remote_hosts.json"
@@ -249,13 +236,11 @@ def main():
             config._create_sample()
         hosts = load_hosts(config_path)
         print_hosts(hosts, config_path)
-        
         try:
             user_input = input(f"{Color.BOLD}{Color.BLUE}{_('enter_host_id')}{Color.END}").strip()
             if user_input.lower() == 'q':
-                    print(f"{Color.BLUE}{_('exit_program')}{Color.END}")
-                    return
-            
+                print(f"{Color.BLUE}{_('exit_program')}{Color.END}")
+                return
             host_id = int(user_input)
             selected_host = None
             for host in hosts:
@@ -268,13 +253,11 @@ def main():
                 host = selected_host.get('host')
                 port = selected_host.get('port', 22)
                 key = selected_host.get('key')
-                
                 ssh_cmd = ['ssh']
                 if key:
                     ssh_cmd.extend(['-i', os.path.expanduser(key)])
                 ssh_cmd.extend(['-p', str(port)])
                 ssh_cmd.append(f"{user}@{host}")
-                
                 print(f"{Color.GREEN}{_('connecting', user=user, host=host, port=port)}{Color.END}")
                 try:
                     subprocess.run(ssh_cmd, check=True)
