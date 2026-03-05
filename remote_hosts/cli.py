@@ -4,6 +4,7 @@ import os
 import json
 import sys
 import subprocess
+import shutil
 from remote_hosts.i18n import _, LANG
 
 __version__ = "0.1.1"
@@ -239,22 +240,10 @@ def edit_config(config_path, editor=None):
             elif choice == 4:
                 editor = 'nano'
             elif choice == 5:
-                # Try to find VS Code executable in common locations
-                if sys.platform == 'win32':
-                    # Common VS Code installation paths on Windows
-                    vscode_paths = [
-                        r'D:\Program\VSCode\Code.exe',      # Based on user's setup
-                        r'D:\Program\VSCode\bin\code.cmd',  # Based on user's setup
-                        r'C:\Program Files\Microsoft VS Code\Code.exe',
-                        r'C:\Program Files\Microsoft VS Code\bin\code.cmd',
-                    ]
-                    for path in vscode_paths:
-                        if os.path.exists(path):
-                            editor = path
-                            break
-                    else:
-                        # Fallback to just 'code' if no path found
-                        editor = 'code'
+                # Try to find VS Code executable dynamically
+                code_path = shutil.which('code')
+                if code_path:
+                    editor = code_path
                 else:
                     editor = 'code'
             else:
