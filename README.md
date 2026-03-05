@@ -34,9 +34,29 @@ git clone https://github.com/hollson/remote-hosts.git
 cd remote-hosts
 
 # Install
+pip install build
+python -m build
 pip install -e .
+
+# Or install in isolated environment
+pipx install build
+pipx run --spec build python -m build
+pipx install -e .
 ```
 
+**Installation verification**
+
+```bash
+remote-hosts -v
+pip show remote-hosts
+```
+
+**Uninstall**
+
+```bash
+pip uninstall remote-hosts -y
+rm $HOME/.remote_hosts.json
+```
 <br/>
 
 ## 🎯 Usage Examples
@@ -44,12 +64,12 @@ pip install -e .
 - **Display help information**
 
 ```bash
-$ remote_hosts -h
+$ remote-hosts -h
 ==============================================
         SSH Remote Host Management Tool        
 ==============================================
 
-usage: remote_hosts [-h] [-v] [-e [editor]]
+usage: remote-hosts [-h] [-v] [-e [editor]]
 
 options:
   -l, --list      View host list
@@ -62,7 +82,7 @@ options:
 - **Login to remote host**
 
 ```bash
-$ remote_hosts
+$ remote-hosts
 ┌──────────┬────────────────┬──────────┬───────────────┬──────────┬───────────┬───────────┐
 │    ID    │      Host      │   User   │     System    │   Arch   │   Region  │   Mark    │
 ├──────────┼────────────────┼──────────┼───────────────┼──────────┼───────────┼───────────┤
@@ -76,7 +96,7 @@ Connecting to root@example.com:22...
 - **Edit configuration file**
 
 ```bash
-$ remote_hosts -e
+$ remote-hosts -e
 Please select text editor:
   1. default    System default text editor
   2. vi         Vi editor
@@ -85,12 +105,11 @@ Please select text editor:
   5. code       Visual Studio Code
 Please enter option number: 
 ```
-
 <br/>
 
 ## ⚙️ Configuration Example
 
-The configuration file is located at `~/.ssh/term_hosts.json` in JSON format. A sample configuration file will be automatically created when running for the first time.
+The configuration file is located at `~/.remote_hosts.json` in JSON format. A sample configuration file will be automatically created when running for the first time.
 
 ```json
 [

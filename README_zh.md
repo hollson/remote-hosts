@@ -20,41 +20,55 @@
 ## 📦 安装
 
 **从PyPI安装（推荐）**
+
 ```bash
 pip install remote-hosts
 ```
 
 **从源码安装**
+
 ```bash
 # 克隆仓库
 git clone https://github.com/hollson/remote-hosts.git
 cd remote-hosts
 
-# 安装
+# 安装(共享环境)
 pip install build
 python -m build
 pip install -e .
-remote-hosts -v
+
+# 或安装(隔离环境)
+pipx install build
+pipx run --spec build python -m build
+pipx install -e .
 ```
+
+**安装验证**
+
+```bash
+remote-hosts -v
+pip show remote-hosts
+```
+
 **卸载**
 
 ```bash
-rm $HOME/.remote_hosts.json
 pip uninstall remote-hosts -y
-rm -rf remote_hosts.egg-info dist
+rm $HOME/.remote_hosts.json
 ```
 <br/>
 
 ## 🎯 使用示例
+
 - **显示帮助信息**
 
 ```bash
-$ remote_hosts -h
+$ remote-hosts -h
 ==============================================
         SSH 远程主机管理工具        
 ==============================================
 
-usage: remote_hosts [-h] [-v] [-e [editor]]
+usage: remote-hosts [-h] [-v] [-e [editor]]
 
 options:
   -l, --list      查看主机列表
@@ -67,7 +81,7 @@ options:
 - **登录远程主机**
 
 ```bash
-$ remote_hosts
+$ remote-hosts
 ┌──────────┬────────────────┬──────────┬───────────────┬──────────┬───────────┬───────────┐
 │    ID    │      主 机      │   用户   │     系统       │   架构   │   区域     │   备注     │
 ├──────────┼────────────────┼──────────┼───────────────┼──────────┼───────────┼───────────┤
@@ -77,10 +91,11 @@ $ remote_hosts
 请输入主机ID(q退出)：1
 正在连接到 root@example.com:22...
 ```
+
 - **编辑配置文件**
 
 ```bash
-$ remote_hosts -e
+$ remote-hosts -e
 请选择文本编辑器:
   1. default    系统默认文本编辑器
   2. vi         Vi编辑器
@@ -89,12 +104,11 @@ $ remote_hosts -e
   5. code       Visual Studio Code
 请输入选项编号: 
 ```
-
 <br/>
 
 ## ⚙️ 配置示例
 
-配置文件位于 `~/.ssh/term_hosts.json`，采用JSON格式。首次运行时会自动创建示例配置文件。
+配置文件位于 `~/.remote_hosts.json`，采用JSON格式。首次运行时会自动创建示例配置文件。
 
 ```json
 [
