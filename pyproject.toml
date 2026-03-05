@@ -21,9 +21,7 @@ keywords = ["ssh", "remote-host", "cli-tool"]
 dependencies = []
 
 [project.scripts]
-remote_hosts = "remote_hosts.cli:main"
-
-
+remote-hosts = "remote_hosts.cli:main"
 
 [tool.setuptools.package-data]
 remote_hosts = ["*.txt"]
@@ -31,4 +29,3 @@ remote_hosts = ["*.txt"]
 [build-system]
 requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"
-

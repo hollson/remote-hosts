@@ -16,10 +16,7 @@
 <a href="README.md">English</a> | <a href="README_zh.md">中文</a>
 </div> 
 
-
 <br/>
-
-
 
 ## 📦 Installation
 
@@ -40,11 +37,7 @@ cd remote-hosts
 pip install -e .
 ```
 
-
-
 <br/>
-
-
 
 ## 🎯 Usage Examples
 
@@ -93,11 +86,7 @@ Please select text editor:
 Please enter option number: 
 ```
 
-
-
 <br/>
-
-
 
 ## ⚙️ Configuration Example
 
@@ -125,11 +114,7 @@ The configuration file is located at `~/.ssh/term_hosts.json` in JSON format. A 
 ]
 ```
 
-
-
 <br/>
-
-
 
 ## 📄 License
 

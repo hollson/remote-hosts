@@ -17,35 +17,34 @@
 </div> 
 <br/>
 
-
-
-## 📦 安装方法
+## 📦 安装
 
 **从PyPI安装（推荐）**
-
 ```bash
 pip install remote-hosts
 ```
 
 **从源码安装**
-
 ```bash
 # 克隆仓库
 git clone https://github.com/hollson/remote-hosts.git
 cd remote-hosts
 
 # 安装
+pip install build twine setuptools
+python -m build
 pip install -e .
+remote-hosts -v
 ```
+**卸载**
 
-
-
+```bash
+rm $HOME/.remote_hosts.json
+pip uninstall remote-hosts -y
+```
 <br/>
 
-
-
 ## 🎯 使用示例
-
 - **显示帮助信息**
 
 ```bash
@@ -77,7 +76,6 @@ $ remote_hosts
 请输入主机ID(q退出)：1
 正在连接到 root@example.com:22...
 ```
-
 - **编辑配置文件**
 
 ```bash
@@ -91,11 +89,7 @@ $ remote_hosts -e
 请输入选项编号: 
 ```
 
-
-
 <br/>
-
-
 
 ## ⚙️ 配置示例
 
@@ -123,15 +117,8 @@ $ remote_hosts -e
 ]
 ```
 
-
-
 <br/>
-
-
 
 ## 📄 许可证
 
 本项目采用 MIT 许可证 - 详情请参阅 [LICENSE](LICENSE) 文件
-
-
-
