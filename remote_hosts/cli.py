@@ -228,7 +228,8 @@ def edit_config(config_path, editor=None):
                 if sys.platform == 'darwin':
                     editor = 'open -a TextEdit'
                 elif sys.platform == 'win32':
-                    editor = 'start'
+                    # Use notepad to open configuration file in Windows
+                    editor = 'notepad'
                 else:
                     editor = 'vi'
             elif choice == 2:
@@ -238,7 +239,24 @@ def edit_config(config_path, editor=None):
             elif choice == 4:
                 editor = 'nano'
             elif choice == 5:
-                editor = 'code'
+                # Try to find VS Code executable in common locations
+                if sys.platform == 'win32':
+                    # Common VS Code installation paths on Windows
+                    vscode_paths = [
+                        r'D:\Program\VSCode\Code.exe',      # Based on user's setup
+                        r'D:\Program\VSCode\bin\code.cmd',  # Based on user's setup
+                        r'C:\Program Files\Microsoft VS Code\Code.exe',
+                        r'C:\Program Files\Microsoft VS Code\bin\code.cmd',
+                    ]
+                    for path in vscode_paths:
+                        if os.path.exists(path):
+                            editor = path
+                            break
+                    else:
+                        # Fallback to just 'code' if no path found
+                        editor = 'code'
+                else:
+                    editor = 'code'
             else:
                 print(f"{Color.RED}{_('invalid_option')}{Color.END}")
                 exit(1)
@@ -248,11 +266,18 @@ def edit_config(config_path, editor=None):
     
     try:
         if ' ' in editor:
-            editor_cmd = editor.split()
-            editor_cmd.append(config_path)
-            subprocess.run(editor_cmd, check=True)
+            # For commands with spaces, use shell=True
+            full_command = f"{editor} {config_path}"
+            subprocess.run(full_command, shell=True)
         else:
-            subprocess.run([editor, config_path], check=True)
+            # For VS Code and similar GUI editors, use shell=True
+            if editor == 'code' or 'Code.exe' in editor:
+                # Use shell=True to find code command
+                full_command = f"{editor} {config_path}"
+                subprocess.run(full_command, shell=True)
+            else:
+                # For other editors, use direct call
+                subprocess.run([editor, config_path], check=True)
         print(f"{Color.BOLD}{Color.GREEN}{_('config_edited', path=config_path)}{Color.END}")
     except subprocess.CalledProcessError as e:
         print(f"{Color.RED}{_('editor_error', error=e)}{Color.END}")

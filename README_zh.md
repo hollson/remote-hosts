@@ -31,7 +31,7 @@ git clone https://github.com/hollson/remote-hosts.git
 cd remote-hosts
 
 # 安装
-pip install build twine setuptools
+pip install build
 python -m build
 pip install -e .
 remote-hosts -v

@@ -12,6 +12,13 @@ def get_system_language():
             # Check if language code contains Chinese
             if 'zh' in lang.lower():
                 return 'zh'
+        
+        # Try to get language from environment variables
+        import os
+        env_lang = os.environ.get('LANG') or os.environ.get('LC_ALL') or os.environ.get('LC_MESSAGES')
+        if env_lang and 'zh' in env_lang.lower():
+            return 'zh'
+        
         # Default to English
         return 'en'
     except:
