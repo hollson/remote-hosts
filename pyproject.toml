@@ -8,7 +8,7 @@ authors = [
 description = "A lightweight SSH remote host management tool for managing and connecting to remote hosts."
 readme = "README.md"
 urls = { Homepage = "https://github.com/hollson/remote-hosts" }
-license = "MIT"
+license = {text = "MIT"}
 classifiers = [
   "Programming Language :: Python :: 3",
   "Operating System :: OS Independent",
