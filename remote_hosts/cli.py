@@ -20,6 +20,7 @@ DEFAULT_SAMPLE_MD5 = "5FACF518B4AD006EA238A27BD60B7BD7"
 def _compute_md5(data: bytes) -> str:
     """Compute MD5 hash of data, compatible with Python 3.8+."""
     if sys.version_info >= (3, 9):
+        # pylint: disable=unexpected-keyword-arg
         return hashlib.md5(data, usedforsecurity=False).hexdigest().upper()
     return hashlib.md5(data).hexdigest().upper()
 
