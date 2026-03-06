@@ -7,7 +7,7 @@ import shutil
 import hashlib
 from remote_hosts.i18n import _, LANG
 
-__version__ = "0.1.1"
+__version__ = "0.1.2"
 
 
 class Color:
