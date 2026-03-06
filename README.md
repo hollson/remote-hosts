@@ -33,15 +33,10 @@ pip install remote-hosts
 git clone https://github.com/hollson/remote-hosts.git
 cd remote-hosts
 
-# Install
+# Build and install
 pip install build
 python -m build
-pip install -e .
-
-# Or install in isolated environment
-pipx install build
-pipx run --spec build python -m build
-pipx install -e .
+pip install --force-reinstall dist/remote_hosts-*.whl
 ```
 
 **Installation verification**
@@ -86,7 +81,7 @@ $ remote-hosts
 ┌──────────┬───────────────┬──────────┬───────────────┬──────────┬───────────┬───────────┐
 │    ID    │     Host      │   User   │      OS       │   Arch   │  Region   │   Mark    │
 ├──────────┼───────────────┼──────────┼───────────────┼──────────┼───────────┼───────────┤
-│1         │example.com    │root      │ubuntu22.04    │x86_64    │Beijing    │example    │
+│1         │example.com    │root      │ubuntu22.04    │x86_64    │New York   │example    │
 ├──────────┼───────────────┼──────────┼───────────────┼──────────┼───────────┼───────────┤
 │2         │192.168.1.1    │root      │       -       │    -     │     -     │example    │
 └──────────┴───────────────┴──────────┴───────────────┴──────────┴───────────┴───────────┘

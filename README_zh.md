@@ -32,15 +32,10 @@ pip install remote-hosts
 git clone https://github.com/hollson/remote-hosts.git
 cd remote-hosts
 
-# 安装(共享环境)
+# 构建并安装
 pip install build
 python -m build
-pip install -e .
-
-# 或安装(隔离环境)
-pipx install build
-pipx run --spec build python -m build
-pipx install -e .
+pip install --force-reinstall dist/remote_hosts-*.whl
 ```
 
 **安装验证**

@@ -4,6 +4,7 @@ import json
 import sys
 import subprocess
 import shutil
+import hashlib
 from remote_hosts.i18n import _, LANG
 
 __version__ = "0.1.1"
@@ -233,9 +234,17 @@ def main():
     if not args or args[0] in ['-l', '--list']:
         if not os.path.exists(os.path.expanduser(config_path)):
             config = Config(config_path)
-            config._create_sample()
+            config._create_sample() 
         hosts = load_hosts(config_path)
         print_hosts(hosts, config_path)
+        
+        expanded_config_path = os.path.expanduser(config_path)
+        with open(expanded_config_path, 'rb') as f:
+            file_md5 = hashlib.md5(f.read()).hexdigest().upper()
+        if file_md5 == "7B8B95B284DE118ED3228C5405E2616F":
+            print(f"{Color.RED}{_('config_not_edited')}{Color.END}")
+            sys.exit(0)
+        
         try:
             user_input = input(f"{Color.BOLD}{Color.BLUE}{_('enter_host_id')}{Color.END}").strip()
             if user_input.lower() == 'q':

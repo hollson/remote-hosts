@@ -73,7 +73,8 @@ TEXT = {
         'header_os': '系统',
         'header_arch': '架构',
         'header_region': '区域',
-        'header_mark': '备注'
+        'header_mark': '备注',
+        'config_not_edited': '请先执行 remote-hosts -e 编辑配置文件，或执行 remote-hosts -m 查看帮助手册'
     },
     'en': {
         'config_error_array': 'Configuration error: Host list must be in array format',
@@ -118,7 +119,8 @@ TEXT = {
         'header_os': 'OS',
         'header_arch': 'Arch',
         'header_region': 'Region',
-        'header_mark': 'Mark'
+        'header_mark': 'Mark',
+        'config_not_edited': 'Please execute remote-hosts -e to edit configuration file, or execute remote-hosts -m to view manual'
     }
 }
 

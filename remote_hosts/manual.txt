@@ -8,8 +8,8 @@ Configuration File:
   Format: JSON
   Example:
      [
-       {"id": 1, "host": "example.com", "port": 22, "user": "root", "key": "~/.ssh/id_rsa", "os": "ubuntu22.04", "arch": "x86_64", "region": "beijing", "mark": "example"},
-       {"id": 2, "host": "172.16.1.1", "user": "root", "mark": "example"}
+       {"id": 1, "host": "example.com", "port": 22, "user": "root", "key": "~/.ssh/id_rsa", "os": "ubuntu22.04", "arch": "x86_64", "region": "New York", "mark": "example"},
+       {"id": 2, "host": "192.168.1.1", "user": "root", "mark": "example"}
      ]
 
   Field Description:

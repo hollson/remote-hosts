@@ -8,8 +8,8 @@ SSH 远程主机管理工具 - 操作指南
   格式: JSON
   示例:
      [
-       {"id": 1, "host": "example.com", "port": 22, "user": "root", "key": "~/.ssh/id_rsa", "os": "ubuntu22.04", "arch": "x86_64", "region": "beijing", "mark": "example"},
-       {"id": 2, "host": "172.16.1.1", "user": "root", "mark": "example"}
+       {"id": 1, "host": "example.com", "port": 22, "user": "root", "key": "~/.ssh/id_rsa", "os": "ubuntu22.04", "arch": "x86_64", "region": "Beijing", "mark": "example"},
+       {"id": 2, "host": "192.168.1.1", "user": "root", "mark": "example"}
      ]
 
   字段说明:
