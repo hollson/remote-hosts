@@ -2,14 +2,12 @@
 """Tests for CLI functionality."""
 
 import pytest
-import sys
 import json
-import hashlib
 import os
 import tempfile
 from io import StringIO
 from unittest.mock import patch, MagicMock
-from remote_hosts.cli import Color, print_hosts, Config, DEFAULT_SAMPLE_MD5
+from remote_hosts.cli import Color, print_hosts, Config, DEFAULT_SAMPLE_MD5, _compute_md5
 
 
 class TestColor:
@@ -112,10 +110,7 @@ class TestSampleDataMD5:
 
         try:
             with open(temp_path, "rb") as f:
-                if sys.version_info >= (3, 9):
-                    calculated_md5 = hashlib.md5(f.read(), usedforsecurity=False).hexdigest().upper()
-                else:
-                    calculated_md5 = hashlib.md5(f.read()).hexdigest().upper()
+                calculated_md5 = _compute_md5(f.read())
 
             assert calculated_md5 == DEFAULT_SAMPLE_MD5, (
                 f"Sample data MD5 mismatch. Expected: {DEFAULT_SAMPLE_MD5}, " f"Got: {calculated_md5}"
@@ -133,10 +128,7 @@ class TestSampleDataMD5:
             assert os.path.exists(config_path), "Sample config file should be created"
 
             with open(config_path, "rb") as f:
-                if sys.version_info >= (3, 9):
-                    file_md5 = hashlib.md5(f.read(), usedforsecurity=False).hexdigest().upper()
-                else:
-                    file_md5 = hashlib.md5(f.read()).hexdigest().upper()
+                file_md5 = _compute_md5(f.read())
 
             assert file_md5 == DEFAULT_SAMPLE_MD5, (
                 f"Config._create_sample MD5 mismatch. Expected: {DEFAULT_SAMPLE_MD5}, " f"Got: {file_md5}"

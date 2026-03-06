@@ -16,6 +16,13 @@ except Exception:
 # MD5 hash of the default sample configuration file (used to detect if user has edited the config)
 DEFAULT_SAMPLE_MD5 = "5FACF518B4AD006EA238A27BD60B7BD7"
 
+
+def _compute_md5(data: bytes) -> str:
+    """Compute MD5 hash of data, compatible with Python 3.8+."""
+    if sys.version_info >= (3, 9):
+        return hashlib.md5(data, usedforsecurity=False).hexdigest().upper()
+    return hashlib.md5(data).hexdigest().upper()
+
 from remote_hosts.i18n import _, LANG
 
 
@@ -281,10 +288,7 @@ def main():
         expanded_config_path = os.path.expanduser(config_path)
         with open(expanded_config_path, "rb") as f:
             # FIXME: 【安全风险】MD5是弱哈希算法，但是用于校验配置文件是否被修改是足够的
-            if sys.version_info >= (3, 9):
-                file_md5 = hashlib.md5(f.read(), usedforsecurity=False).hexdigest().upper()
-            else:
-                file_md5 = hashlib.md5(f.read()).hexdigest().upper()
+            file_md5 = _compute_md5(f.read())
             # print(f"file_md5: {file_md5}")
         if file_md5 == DEFAULT_SAMPLE_MD5:
             print(f"{Color.RED}{_('config_not_edited')}{Color.END}")
