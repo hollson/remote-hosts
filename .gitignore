@@ -149,3 +149,21 @@ cython_debug/
 
 # Mac OS
 .DS_Store
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Bandit security reports
+bandit-report.json
+
+# Build artifacts
+*.whl
+*.tar.gz
+
+# Temporary files
+*.tmp
+*.bak

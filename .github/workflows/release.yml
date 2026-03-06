@@ -1,0 +1,55 @@
+# Release 工作流名称
+name: Create Release
+
+# 触发条件：只在主版本和次版本更新时触发（如 v1.0.0, v0.2.0）
+# 不触发：修订版本更新（如 v0.1.1, v0.1.2）
+on:
+  push:
+    tags:
+      - 'v[0-9]+\.[0-9]+\.0'  # 匹配 vX.Y.0 格式（主版本或次版本更新）
+
+jobs:
+  # 创建 GitHub Release 的 job
+  create-release:
+    # 运行环境：最新的 Ubuntu
+    runs-on: ubuntu-latest
+    # 权限设置：需要写入内容的权限才能创建 Release
+    permissions:
+      contents: write
+
+    steps:
+    # 1. 检出代码仓库
+    - uses: actions/checkout@v4
+
+    # 2. 从标签中提取版本号
+    # 例如：refs/tags/v0.1.2 -> 0.1.2
+    - name: Get version from tag
+      id: get_version
+      run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+
+    # 3. 创建 GitHub Release
+    - name: Create Release
+      uses: actions/create-release@v1
+      env:
+        # 使用 GitHub 自动提供的 Token 进行认证
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        # Release 关联的标签
+        tag_name: ${{ github.ref }}
+        # Release 标题
+        release_name: Release ${{ steps.get_version.outputs.VERSION }}
+        # Release 描述内容（Markdown 格式）
+        body: |
+          ## What's New in ${{ steps.get_version.outputs.VERSION }}
+
+          ### Changes
+          - See [commit history](https://github.com/${{ github.repository }}/commits/${{ github.ref }})
+
+          ### Installation
+          ```bash
+          pip install remote-hosts==${{ steps.get_version.outputs.VERSION }}
+          ```
+        # 是否为草稿（false 表示直接发布）
+        draft: false
+        # 是否为预发布版本（false 表示正式版本）
+        prerelease: false

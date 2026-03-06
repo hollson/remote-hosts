@@ -20,12 +20,103 @@ classifiers = [
 keywords = ["ssh", "remote-host", "cli-tool"]
 dependencies = []
 
+# 开发依赖
+[project.optional-dependencies]
+dev = [
+    "pylint>=4.0.5",      # 代码质量检查
+    "pytest>=9.0.2",       # 测试框架
+    "pytest-cov>=7.0.0",   # 测试覆盖率
+    "black>=26.1.0",       # 代码格式化
+    "mypy>=1.19.0",        # 类型检查
+    "bandit>=1.9.4",       # 安全检查
+]
+
+# 命令行脚本
 [project.scripts]
 remote-hosts = "remote_hosts.cli:main"
 
+# 包数据
 [tool.setuptools.package-data]
 remote_hosts = ["*.txt"]
 
+# 构建系统
 [build-system]
 requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"
+
+# Pylint 消息控制
+[tool.pylint.messages_control]
+disable = [
+    "C0103",  # 无效的命名（对于短变量名如 'f', 'e'）
+    "C0114",  # 缺少模块文档字符串
+    "C0115",  # 缺少类文档字符串
+    "C0116",  # 缺少函数文档字符串
+    "R0903",  # 公共方法太少（对于数据类）
+    "W0511",  # 忽略 TODO/FIXME/XXX 等注释的告警
+    "C0301",  # 行太长（用户接受长行）
+    "R0914",  # 局部变量太多
+    "R0915",  # 语句太多
+    "R0912",  # 分支太多
+    "C0415",  # 顶级以外的导入（允许条件导入）
+    "W1514",  # 使用 open 时未显式指定编码
+    "R1722",  # 考虑使用 'sys.exit' 替代
+    "W0212",  # 访问受保护的成员
+    "W0718",  # 捕获过于通用的异常
+    "W1510",  # 使用 subprocess.run 时未使用 check
+    "C0209",  # 格式化可以是 f-string 的常规字符串
+    "W0702",  # 未指定异常类型（裸异常）
+    "W0613",  # 未使用的参数
+]
+
+# Pylint 格式设置
+[tool.pylint.format]
+max-line-length = 120
+
+# Pylint 设计设置
+[tool.pylint.design]
+max-args = 8         # 最大参数数
+max-locals = 20      # 最大局部变量数
+max-returns = 8      # 最大返回值数
+max-branches = 15    # 最大分支数
+max-statements = 50  # 最大语句数
+
+# Pylint 基本设置
+[tool.pylint.basic]
+good-names = ["i", "j", "k", "e", "f", "fd", "ip", "id", "os", "_"]  # 允许的短变量名
+
+# Pylint 导入设置
+[tool.pylint.imports]
+disable = ["C0413"]  # 允许非顶级导入（用于条件导入）
+
+# Black 代码格式化设置
+[tool.black]
+line-length = 120  # 行长度
+# 目标 Python 版本
+target-version = ['py38', 'py39', 'py310', 'py311', 'py312']
+
+# Mypy 类型检查设置
+[tool.mypy]
+python_version = "3.8"          # Python 版本
+ignore_missing_imports = true   # 忽略缺失的导入
+show_error_codes = true         # 显示错误代码
+warn_return_any = true          # 警告返回 any 类型
+warn_unused_ignores = true      # 警告未使用的忽略
+
+# Pytest 配置选项
+[tool.pytest.ini_options]
+testpaths = ["tests"]         # 测试目录
+python_files = "test_*.py"    # 测试文件模式
+python_classes = "Test*"      # 测试类模式
+python_functions = "test_*"   # 测试函数模式
+addopts = "-v --tb=short"     # 额外选项
+
+# Coverage 运行设置
+[tool.coverage.run]
+source = ["remote_hosts"]
+branch = true  # 分支覆盖率
+
+# Coverage 报告设置
+[tool.coverage.report]
+show_missing = true      # 显示缺失的覆盖率
+skip_covered = false     # 不跳过已覆盖的代码
+fail_under = 60          # 覆盖率阈值（暂时降低，因为 SSH 连接功能无法测试）
