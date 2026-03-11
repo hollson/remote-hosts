@@ -1,0 +1,8 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.5.0
+    hooks:
+      - id: fix-byte-order-marker
+      - id: end-of-file-fixer  # 确保文件以LF结尾
+      - id: mixed-line-ending  # 检测并修复CRLF
+        args: ['--fix=lf']     # 强制转为LF
