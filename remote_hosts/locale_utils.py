@@ -97,7 +97,8 @@ class _LocaleUtils:
         if not code or not code.strip():
             return default
         clean_code = str(code).lower().replace("(", "").replace(")", "").replace("_", "-").strip()
-        return map_dict.get(clean_code, map_dict.get(clean_code.split(".", maxsplit=1)[0], default))
+        result = map_dict.get(clean_code, map_dict.get(clean_code.split(".", maxsplit=1)[0], default))
+        return str(result)
 
     @staticmethod
     def is_valid_code(code: str, is_upper: bool = False) -> bool:
@@ -245,7 +246,7 @@ def _get_windows_locale_name() -> Optional[str]:
                 locale_name = winreg.QueryValueEx(reg_key, "LocaleName")[0]
                 winreg.CloseKey(reg_key)
                 if locale_name:
-                    return locale_name
+                    return str(locale_name)
             except winreg.error:
                 continue
     except (ImportError, Exception):

@@ -11,7 +11,7 @@ try:
 
     __version__ = version("remote-hosts")
 except Exception:
-    __version__ = "0.1.2"
+    __version__ = "0.1.3"
 
 # MD5 hash of the default sample configuration file (used to detect if user has edited the config)
 DEFAULT_SAMPLE_MD5 = "5FACF518B4AD006EA238A27BD60B7BD7"
