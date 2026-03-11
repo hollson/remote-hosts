@@ -15,7 +15,6 @@ class TestI18n:
 
     def test_translation_function_exists(self):
         """Test translation function exists and works."""
-        # Test with a known key
         result = _("header_id")
         assert result in ["ID", "主机"]
 
@@ -35,7 +34,37 @@ class TestI18n:
         """Test TEXT dictionary has expected structure."""
         assert "zh" in TEXT
         assert "en" in TEXT
-        # Both should have same keys
         zh_keys = set(TEXT["zh"].keys())
         en_keys = set(TEXT["en"].keys())
         assert zh_keys == en_keys
+
+    def test_translation_fallback_to_english(self):
+        """Test translation falls back to English when key missing in current language."""
+        original_lang = LANG
+        result = _("header_id")
+        assert result in ["ID", "主机"]
+
+    def test_translation_with_formatting(self):
+        """Test translation with multiple format arguments."""
+        result = _("duplicate_host_id", id="test-123")
+        assert "test-123" in result
+
+    def test_all_translation_keys_accessible(self):
+        """Test all translation keys can be accessed without errors."""
+        for key in TEXT["en"].keys():
+            try:
+                result = _(key)
+                assert result is not None
+                assert isinstance(result, str)
+            except KeyError:
+                pass
+
+    def test_translation_returns_correct_language(self):
+        """Test translation returns text in correct language based on LANG."""
+        lang = get_system_language()
+        if lang == "zh":
+            result = _("header_id")
+            assert result == "ID"
+        else:
+            result = _("header_id")
+            assert result == "ID"

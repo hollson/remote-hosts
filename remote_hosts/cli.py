@@ -25,6 +25,7 @@ def _compute_md5(data: bytes) -> str:
         return hashlib.md5(normalized_data, usedforsecurity=False).hexdigest().upper()
     return hashlib.md5(normalized_data).hexdigest().upper()
 
+
 from remote_hosts.i18n import _, LANG
 
 

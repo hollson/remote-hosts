@@ -165,8 +165,7 @@ class TestSampleDataMD5:
         linux_md5 = _compute_md5(linux_content)
 
         assert windows_md5 == linux_md5, (
-            f"MD5 should be consistent across platforms. "
-            f"Windows: {windows_md5}, Linux: {linux_md5}"
+            f"MD5 should be consistent across platforms. " f"Windows: {windows_md5}, Linux: {linux_md5}"
         )
         assert windows_md5 == DEFAULT_SAMPLE_MD5, (
             f"Cross-platform MD5 should match DEFAULT_SAMPLE_MD5. "
