@@ -133,3 +133,42 @@ class TestSampleDataMD5:
             assert file_md5 == DEFAULT_SAMPLE_MD5, (
                 f"Config._create_sample MD5 mismatch. Expected: {DEFAULT_SAMPLE_MD5}, " f"Got: {file_md5}"
             )
+
+    def test_md5_cross_platform_consistency(self):
+        """Test that MD5 calculation is consistent across different line endings.
+
+        This test verifies that _compute_md5 produces the same hash regardless
+        of whether the file uses Windows (CRLF) or Unix (LF) line endings.
+        """
+        sample_data = [
+            {
+                "id": 1,
+                "host": "example.com",
+                "port": 22,
+                "user": "root",
+                "key": "~/.ssh/id_rsa",
+                "os": "ubuntu22.04",
+                "arch": "x86_64",
+                "region": "Beijing",
+                "mark": "example",
+            },
+            {"id": 2, "host": "192.168.1.1", "user": "root", "mark": "example"},
+        ]
+        content = json.dumps(sample_data, indent="\t", ensure_ascii=False)
+
+        # Simulate Windows line endings (CRLF)
+        windows_content = content.encode("utf-8").replace(b"\n", b"\r\n")
+        # Simulate Linux line endings (LF)
+        linux_content = content.encode("utf-8")
+
+        windows_md5 = _compute_md5(windows_content)
+        linux_md5 = _compute_md5(linux_content)
+
+        assert windows_md5 == linux_md5, (
+            f"MD5 should be consistent across platforms. "
+            f"Windows: {windows_md5}, Linux: {linux_md5}"
+        )
+        assert windows_md5 == DEFAULT_SAMPLE_MD5, (
+            f"Cross-platform MD5 should match DEFAULT_SAMPLE_MD5. "
+            f"Expected: {DEFAULT_SAMPLE_MD5}, Got: {windows_md5}"
+        )
