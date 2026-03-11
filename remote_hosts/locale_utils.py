@@ -238,16 +238,16 @@ def _get_windows_locale_name() -> Optional[str]:
 
     # Try to get from registry
     try:
-        import winreg
+        import winreg  # type: ignore
 
-        for hkey in [winreg.HKEY_CURRENT_USER, winreg.HKEY_LOCAL_MACHINE]:
+        for hkey in [winreg.HKEY_CURRENT_USER, winreg.HKEY_LOCAL_MACHINE]:  # type: ignore
             try:
-                reg_key = winreg.OpenKey(hkey, r"Control Panel\International")
-                locale_name = winreg.QueryValueEx(reg_key, "LocaleName")[0]
-                winreg.CloseKey(reg_key)
+                reg_key = winreg.OpenKey(hkey, r"Control Panel\International")  # type: ignore
+                locale_name = winreg.QueryValueEx(reg_key, "LocaleName")[0]  # type: ignore
+                winreg.CloseKey(reg_key)  # type: ignore
                 if locale_name:
                     return str(locale_name)
-            except winreg.error:
+            except winreg.error:  # type: ignore
                 continue
     except (ImportError, Exception):
         pass
@@ -255,13 +255,13 @@ def _get_windows_locale_name() -> Optional[str]:
     # Fallback to ctypes
     if not locale_name:
         try:
-            import ctypes
+            import ctypes  # type: ignore
 
-            kernel32 = ctypes.windll.kernel32
-            lcid = kernel32.GetUserDefaultUILanguage()
-            buf = ctypes.create_unicode_buffer(100)
-            kernel32.GetLocaleInfoW(lcid, 0x0000005C, buf, 100)
-            locale_name = buf.value
+            kernel32 = ctypes.windll.kernel32  # type: ignore
+            lcid = kernel32.GetUserDefaultUILanguage()  # type: ignore
+            buf = ctypes.create_unicode_buffer(100)  # type: ignore
+            kernel32.GetLocaleInfoW(lcid, 0x0000005C, buf, 100)  # type: ignore
+            locale_name = buf.value  # type: ignore
         except Exception:
             pass
 

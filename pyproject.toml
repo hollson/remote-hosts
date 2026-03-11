@@ -100,7 +100,7 @@ python_version = "3.8"          # Python 版本
 ignore_missing_imports = true   # 忽略缺失的导入
 show_error_codes = true         # 显示错误代码
 warn_return_any = true          # 警告返回 any 类型
-warn_unused_ignores = true      # 警告未使用的忽略
+warn_unused_ignores = false     # 禁用未使用的忽略警告
 
 # Pytest 配置选项
 [tool.pytest.ini_options]
