@@ -23,13 +23,13 @@ dependencies = []
 # 开发依赖
 [project.optional-dependencies]
 dev = [
-    "pylint>=2.17.0",      # 代码质量检查 (支持 Python 3.8)
+    "pylint>=3.0.0",       # 代码质量检查 (支持 Python 3.12)
     "pytest>=7.0.0",       # 测试框架
     "pytest-cov>=4.0.0",   # 测试覆盖率
     "black>=23.0.0",       # 代码格式化
     "mypy>=1.0.0",         # 类型检查
     "bandit>=1.7.0",       # 安全检查
-    "pre-commit>=4.2.0",   # Git hooks 管理
+    "pre-commit>=3.0.0",   # Git hooks 管理
 ]
 
 # 命令行脚本
