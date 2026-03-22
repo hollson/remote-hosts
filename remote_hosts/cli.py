@@ -20,7 +20,7 @@ def _compute_md5(data: bytes) -> str:
     """Compute MD5 hash of data, compatible with Python 3.8+."""
     normalized_data = data.replace(b"\r\n", b"\n")
     try:
-        return hashlib.md5(normalized_data, usedforsecurity=False).hexdigest().upper()  # pylint: disable=unexpected-keyword-arg
+        return hashlib.md5(normalized_data, usedforsecurity=False).hexdigest().upper()  # type: ignore[call-arg]  # pylint: disable=unexpected-keyword-arg
     except TypeError:
         return hashlib.md5(normalized_data).hexdigest().upper()  # nosec B324
 
