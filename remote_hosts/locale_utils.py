@@ -178,7 +178,7 @@ def get_locale_info() -> LocaleInfo:
                     lang, region, encoding = _LocaleUtils.auto_complete(lang, region, encoding)
                     final_lang, final_region, final_encoding = lang, region, encoding
                 locale_detected = True
-    except Exception:
+    except Exception:  # nosec B110
         pass
 
     if not locale_detected:
@@ -204,7 +204,7 @@ def get_locale_info() -> LocaleInfo:
                         final_lang, final_region = lang, region if region else DEFAULT_REGION.get(lang, "US")
                         final_encoding = "UTF-8"
                         locale_detected = True
-            except Exception:
+            except Exception:  # nosec B110
                 pass
 
     if locale_detected:
@@ -262,7 +262,7 @@ def _get_windows_locale_name() -> Optional[str]:
             buf = ctypes.create_unicode_buffer(100)  # type: ignore
             kernel32.GetLocaleInfoW(lcid, 0x0000005C, buf, 100)  # type: ignore
             locale_name = buf.value  # type: ignore
-        except Exception:
+        except Exception:  # nosec B110
             pass
 
     return locale_name

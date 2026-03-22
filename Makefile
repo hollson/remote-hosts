@@ -1,4 +1,4 @@
-.PHONY: help install install-dev test test-cov lint format mypy bandit clean build publish
+.PHONY: help install install-dev test test-cov lint format mypy bandit clean build publish pre-commit
 
 help:
 	@echo "Available commands:"
@@ -10,6 +10,7 @@ help:
 	@echo "  format       - Format code with black"
 	@echo "  mypy         - Run type checking"
 	@echo "  bandit       - Run security check"
+	@echo "  pre-commit   - Run pre-commit hooks on all files"
 	@echo "  clean        - Clean build artifacts"
 	@echo "  build        - Build package"
 	@echo "  publish      - Publish to PyPI (requires credentials)"
@@ -37,6 +38,9 @@ mypy:
 
 bandit:
 	bandit -r remote_hosts/
+
+pre-commit:
+	python3 -m pre_commit run --all-files
 
 clean:
 	rm -rf build/

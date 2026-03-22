@@ -7,21 +7,22 @@ import os
 import tempfile
 from io import StringIO
 from unittest.mock import patch, MagicMock
-from remote_hosts.cli import Color, print_hosts, Config, DEFAULT_SAMPLE_MD5, _compute_md5
+from remote_hosts.cli import print_hosts, Config, DEFAULT_SAMPLE_MD5, _compute_md5
+from remote_hosts.color import RED, GREEN, YELLOW, BLUE, HEADER, END, BOLD
 
 
 class TestColor:
-    """Test cases for Color class."""
+    """Test cases for Color constants."""
 
     def test_color_constants(self):
-        """Test color constants are defined."""
-        assert Color.RED == "\033[91m"
-        assert Color.GREEN == "\033[92m"
-        assert Color.YELLOW == "\033[93m"
-        assert Color.BLUE == "\033[94m"
-        assert Color.HEADER == "\033[95m"
-        assert Color.END == "\033[0m"
-        assert Color.BOLD == "\033[1m"
+        """Test color constants are defined (empty in non-TTY environment)."""
+        assert RED in ("", "\033[91m")
+        assert GREEN in ("", "\033[92m")
+        assert YELLOW in ("", "\033[93m")
+        assert BLUE in ("", "\033[94m")
+        assert HEADER in ("", "\033[95m")
+        assert END in ("", "\033[0m")
+        assert BOLD in ("", "\033[1m")
 
 
 class TestPrintHosts:

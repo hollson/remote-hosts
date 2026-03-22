@@ -13,7 +13,6 @@ try:
 except Exception:
     __version__ = "0.1.3"
 
-# MD5 hash of the default sample configuration file (used to detect if user has edited the config)
 DEFAULT_SAMPLE_MD5 = "5FACF518B4AD006EA238A27BD60B7BD7"
 
 
@@ -23,20 +22,11 @@ def _compute_md5(data: bytes) -> str:
     if sys.version_info >= (3, 9):
         # pylint: disable=unexpected-keyword-arg
         return hashlib.md5(normalized_data, usedforsecurity=False).hexdigest().upper()
-    return hashlib.md5(normalized_data).hexdigest().upper()
+    return hashlib.md5(normalized_data, usedforsecurity=False).hexdigest().upper()  # nosec B324
 
 
 from remote_hosts.i18n import _, LANG
-
-
-class Color:
-    RED = "\033[91m"
-    GREEN = "\033[92m"
-    YELLOW = "\033[93m"
-    BLUE = "\033[94m"
-    HEADER = "\033[95m"
-    END = "\033[0m"
-    BOLD = "\033[1m"
+from remote_hosts.color import END, BOLD, RED, GREEN, BLUE
 
 
 class Config:
@@ -56,15 +46,15 @@ class Config:
                 else:
                     hosts_data = data
                 if not isinstance(hosts_data, list):
-                    print(f"{Color.RED}{_('config_error_array')}{Color.END}")
+                    print(f"{RED}{_('config_error_array')}{END}")
                     exit(1)
                 self._validate_and_load_hosts(hosts_data)
         except FileNotFoundError:
             self._create_sample()
-            print(f"{Color.BLUE} {_('init_config')}{Color.END}")
+            print(f"{BLUE} {_('init_config')}{END}")
             exit(0)
         except json.JSONDecodeError:
-            print(f"{Color.RED}{_('config_error_json')}{Color.END}")
+            print(f"{RED}{_('config_error_json')}{END}")
             exit(1)
         return self.hosts
 
@@ -75,10 +65,10 @@ class Config:
             host_name = host_data.get("host")
             user_name = host_data.get("user")
             if host_id is None or not host_name or not user_name:
-                print(f"{Color.RED}{_('host_config_error')}{Color.END}")
+                print(f"{RED}{_('host_config_error')}{END}")
                 exit(1)
             if host_id in id_set:
-                print(f"{Color.RED}{_('duplicate_host_id', id=host_id)}{Color.END}")
+                print(f"{RED}{_('duplicate_host_id', id=host_id)}{END}")
                 exit(1)
             id_set.add(host_id)
             self.hosts.append(host_data)
@@ -112,7 +102,6 @@ def load_hosts(config_path):
 
 def print_hosts(hosts, config_path):
     """Print host list in table format"""
-    # Reserved for future use: config_path
     header_labels = [
         _("header_id"),
         _("header_host"),
@@ -122,7 +111,7 @@ def print_hosts(hosts, config_path):
         _("header_region"),
         _("header_mark"),
     ]
-    headers = [f"{Color.BOLD}{Color.BLUE}{label}{Color.END}" for label in header_labels]
+    headers = [f"{BOLD}{BLUE}{label}{END}" for label in header_labels]
     rows = []
     for host in hosts:
         try:
@@ -136,9 +125,9 @@ def print_hosts(hosts, config_path):
             if host_id is not None and host_name and user_name:
                 rows.append(
                     [
-                        f"{Color.GREEN}{host_id}{Color.END}",
-                        f"{Color.GREEN}{host_name}{Color.END}",
-                        f"{Color.GREEN}{user_name}{Color.END}",
+                        f"{GREEN}{host_id}{END}",
+                        f"{GREEN}{host_name}{END}",
+                        f"{GREEN}{user_name}{END}",
                         os_info,
                         arch_info,
                         region_info,
@@ -146,7 +135,7 @@ def print_hosts(hosts, config_path):
                     ]
                 )
         except KeyError:
-            print(f"{Color.RED}{_('host_info_missing')}{Color.END}")
+            print(f"{RED}{_('host_info_missing')}{END}")
             exit(1)
     if rows:
 
@@ -200,7 +189,7 @@ def print_hosts(hosts, config_path):
         bottom_border = "└" + "┴".join(["─" * width for width in col_widths]) + "┘"
         print(bottom_border)
     else:
-        print(f"{Color.RED}{_('all_rows_empty')}{Color.END}")
+        print(f"{RED}{_('all_rows_empty')}{END}")
 
 
 def show_manual():
@@ -213,10 +202,10 @@ def show_manual():
         if content:
             print(content.decode("utf-8"))
         else:
-            print(f"{Color.RED}{_('manual_not_found', path=manual_file)}{Color.END}")
+            print(f"{RED}{_('manual_not_found', path=manual_file)}{END}")
     except Exception as e:
-        print(f"{Color.RED}{_('manual_not_found', path=manual_file)}{Color.END}")
-        print(f"{Color.RED}{_('manual_error', error=e)}{Color.END}")
+        print(f"{RED}{_('manual_not_found', path=manual_file)}{END}")
+        print(f"{RED}{_('manual_error', error=e)}{END}")
 
 
 def edit_config(config_path, editor=None):
@@ -227,7 +216,7 @@ def edit_config(config_path, editor=None):
         config._create_sample()
     if not editor:
         print(
-            f"{Color.BOLD}{Color.BLUE}{_('select_editor')}\n  1. default \t{_('editor_default')}\n  2. vi \t{_('editor_vi')}\n  3. vim \t{_('editor_vim')}\n  4. nano \t{_('editor_nano')}\n  5. code \t{_('editor_code')}{Color.END}"
+            f"{BOLD}{BLUE}{_('select_editor')}\n  1. default \t{_('editor_default')}\n  2. vi \t{_('editor_vi')}\n  3. vim \t{_('editor_vim')}\n  4. nano \t{_('editor_nano')}\n  5. code \t{_('editor_code')}{END}"
         )
         try:
             choice = int(input(_("enter_option")))
@@ -251,29 +240,26 @@ def edit_config(config_path, editor=None):
                 else:
                     editor = "code"
             else:
-                print(f"{Color.RED}{_('invalid_option')}{Color.END}")
+                print(f"{RED}{_('invalid_option')}{END}")
                 exit(1)
         except ValueError:
-            print(f"{Color.RED}{_('invalid_input')}{Color.END}")
+            print(f"{RED}{_('invalid_input')}{END}")
             exit(1)
     try:
-        if " " in editor:  # 处理空格包含的编辑器，如"code --wait"
+        if " " in editor:
             full_command = f"{editor} {config_path}"
-            # FIXME: 【安全风险】如果editor是非法命令或程序，会导致安全问题
             subprocess.run(full_command, shell=True)  # nosec B602
         else:
             if editor == "code" or "Code.exe" in editor:
                 full_command = f"{editor} {config_path}"
-                # FIXME: 【安全风险】如果editor是非法命令或程序，会导致安全问题
                 subprocess.run(full_command, shell=True)  # nosec B602
             else:
-                # FIXME: 【安全风险】如果editor是非法命令或程序，会导致安全问题
                 subprocess.run([editor, config_path], check=True)  # nosec B603
-        print(f"{Color.BOLD}{Color.GREEN}{_('config_edited', path=config_path)}{Color.END}")
+        print(f"{BOLD}{GREEN}{_('config_edited', path=config_path)}{END}")
     except subprocess.CalledProcessError as e:
-        print(f"{Color.RED}{_('editor_error', error=e)}{Color.END}")
+        print(f"{RED}{_('editor_error', error=e)}{END}")
     except FileNotFoundError:
-        print(f"{Color.RED}{_('editor_not_found', editor=editor)}{Color.END}")
+        print(f"{RED}{_('editor_not_found', editor=editor)}{END}")
         edit_config(config_path)
 
 
@@ -290,17 +276,15 @@ def main():
 
         expanded_config_path = os.path.expanduser(config_path)
         with open(expanded_config_path, "rb") as f:
-            # FIXME: 【安全风险】MD5是弱哈希算法，但是用于校验配置文件是否被修改是足够的
             file_md5 = _compute_md5(f.read())
-            # print(f"file_md5: {file_md5}")
         if file_md5 == DEFAULT_SAMPLE_MD5:
-            print(f"{Color.RED}{_('config_not_edited')}{Color.END}")
+            print(f"{RED}{_('config_not_edited')}{END}")
             sys.exit(0)
 
         try:
-            user_input = input(f"{Color.BOLD}{Color.BLUE}{_('enter_host_id')}{Color.END}").strip()
+            user_input = input(f"{BOLD}{BLUE}{_('enter_host_id')}{END}").strip()
             if user_input.lower() == "q":
-                print(f"{Color.BLUE}{_('exit_program')}{Color.END}")
+                print(f"{BLUE}{_('exit_program')}{END}")
                 return
             host_id = int(user_input)
             selected_host = None
@@ -319,22 +303,21 @@ def main():
                     ssh_cmd.extend(["-i", os.path.expanduser(key)])
                 ssh_cmd.extend(["-p", str(port)])
                 ssh_cmd.append(f"{user}@{host}")
-                print(f"{Color.GREEN}{_('connecting', user=user, host=host, port=port)}{Color.END}")
+                print(f"{GREEN}{_('connecting', user=user, host=host, port=port)}{END}")
                 try:
-                    # FIXME: 【安全风险】如果ssh_cmd是非法命令或程序，会导致安全问题
                     subprocess.run(ssh_cmd, check=True)  # nosec B603
                 except subprocess.CalledProcessError:
-                    print(f"{Color.RED}{_('ssh_failed')}{Color.END}")
+                    print(f"{RED}{_('ssh_failed')}{END}")
             else:
-                print(f"{Color.RED}{_('host_not_found', id=host_id)}{Color.END}")
+                print(f"{RED}{_('host_not_found', id=host_id)}{END}")
                 return
         except ValueError:
-            print(f"{Color.RED}{_('invalid_id')}{Color.END}")
+            print(f"{RED}{_('invalid_id')}{END}")
             return
     elif args[0] in ["-h", "--help"]:
-        print("{}=============================================={}".format(Color.BLUE, Color.END))
-        print("{}        {}        {}".format(Color.BOLD + Color.GREEN, _("help_title"), Color.END))
-        print("{}=============================================={}".format(Color.BLUE, Color.END))
+        print("{}=============================================={}".format(BLUE, END))
+        print("{}        {}        {}".format(BOLD + GREEN, _("help_title"), END))
+        print("{}=============================================={}".format(BLUE, END))
         print()
         print(_("usage"))
         print()
