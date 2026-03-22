@@ -19,9 +19,10 @@ DEFAULT_SAMPLE_MD5 = "5FACF518B4AD006EA238A27BD60B7BD7"
 def _compute_md5(data: bytes) -> str:
     """Compute MD5 hash of data, compatible with Python 3.8+."""
     normalized_data = data.replace(b"\r\n", b"\n")
-    if sys.version_info >= (3, 9):
-        return hashlib.md5(normalized_data, usedforsecurity=False).hexdigest().upper()
-    return hashlib.md5(normalized_data).hexdigest().upper()  # nosec B324  # pylint: disable=unexpected-keyword-arg
+    try:
+        return hashlib.md5(normalized_data, usedforsecurity=False).hexdigest().upper()  # pylint: disable=unexpected-keyword-arg
+    except TypeError:
+        return hashlib.md5(normalized_data).hexdigest().upper()  # nosec B324
 
 
 from remote_hosts.i18n import _, LANG
