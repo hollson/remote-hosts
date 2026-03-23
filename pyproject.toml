@@ -23,13 +23,18 @@ dependencies = []
 # 开发依赖
 [project.optional-dependencies]
 dev = [
-    "pylint>=3.0.0",       # 代码质量检查 (支持 Python 3.12)
-    "pytest>=7.0.0",       # 测试框架
-    "pytest-cov>=4.0.0",   # 测试覆盖率
-    "black>=23.0.0",       # 代码格式化
-    "mypy>=1.0.0",         # 类型检查
-    "bandit>=1.7.0",       # 安全检查
-    "pre-commit>=3.0.0",   # Git hooks 管理
+    "pylint>=4.0.2",       # 代码质量检查 (支持 Python 3.12)
+    "pytest>=9.0.2",       # 测试框架
+    "pytest-cov>=7.0.0",   # 测试覆盖率
+    "pytest-mock>=3.14.0", # Mock 支持
+    "black>=26.3.0",       # 代码格式化
+    "mypy>=1.18.2",         # 类型检查
+    "pyright>=1.1.406",      # BasedPyright 类型检查
+    "bandit>=1.9.2",       # 安全检查
+    "pre-commit>=4.2.0",   # Git hooks 管理
+    "isort>=8.0.0",       # 导入排序
+    "build>=1.0.0",        # 构建工具
+    "twine>=6.0.0",        # PyPI 发布工具
 ]
 
 # 命令行脚本
@@ -110,6 +115,8 @@ reportDeprecated = "warning"    # 弃用警告级别
 typeCheckingMode = "basic"      # 类型检查模式
 # 禁用 typing 模块弃用警告，因为我们需要兼容 Python 3.8+
 reportDeprecatedType = "none"
+# 忽略测试文件中的导入错误（pytest 是开发依赖）
+reportMissingImports = "none"
 
 # Pytest 配置选项
 [tool.pytest.ini_options]

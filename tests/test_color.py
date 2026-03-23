@@ -2,8 +2,6 @@
 """Tests for color module."""
 
 import os
-import sys
-import pytest
 from remote_hosts.color import (
     init,
     deinit,
@@ -197,16 +195,18 @@ class TestColor:
         """Test color attributes are dynamic based on colorization status."""
         # Save original environment
         original_no_color = os.environ.get("NO_COLOR")
+        original_force_color = os.environ.get("FORCE_COLOR")
 
         try:
-            # Enable color
+            # Remove NO_COLOR and set FORCE_COLOR to enable color
             if "NO_COLOR" in os.environ:
                 del os.environ["NO_COLOR"]
+            os.environ["FORCE_COLOR"] = "1"
 
             # Should return non-empty strings when color is enabled
             red_with_color = Fore.RED
 
-            # Disable color
+            # Disable color with NO_COLOR (has higher priority)
             os.environ["NO_COLOR"] = "1"
 
             # Should return empty strings when color is disabled
@@ -214,12 +214,19 @@ class TestColor:
 
             # The values should be different
             assert red_with_color != red_without_color
+            assert red_with_color != ""
+            assert red_without_color == ""
         finally:
             # Restore environment
             if original_no_color is not None:
                 os.environ["NO_COLOR"] = original_no_color
             elif "NO_COLOR" in os.environ:
                 del os.environ["NO_COLOR"]
+
+            if original_force_color is not None:
+                os.environ["FORCE_COLOR"] = original_force_color
+            elif "FORCE_COLOR" in os.environ:
+                del os.environ["FORCE_COLOR"]
 
     def test_terminal_support_check(self):
         """Test terminal support check."""
