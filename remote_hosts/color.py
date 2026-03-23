@@ -4,13 +4,13 @@ import atexit
 import warnings
 from typing import Dict, Union
 
-# -------------------------- 平台&终端检测（精准识别 Git Bash/MSYS2） --------------------------
+# -------------------------- Platform & Terminal Detection (Precise Git Bash/MSYS2 Detection) --------------------------
 
 
 def _detect_platform_and_terminal() -> Dict[str, bool]:
     """
-    精准检测平台和终端类型，兼容 Python 3.8+
-    重点识别 Windows 下的 Git Bash/MSYS2/Cygwin
+    Precisely detect platform and terminal type, compatible with Python 3.8+
+    Focus on identifying Git Bash/MSYS2/Cygwin on Windows
     """
     platform = {
         "is_win": sys.platform.startswith("win32"),
@@ -19,24 +19,24 @@ def _detect_platform_and_terminal() -> Dict[str, bool]:
         "is_linux": sys.platform.startswith("linux"),
         "is_msys2": False,
         "is_mingw": False,
-        "is_git_bash": False,  # 新增 Git Bash 检测
-        "is_unix_like_terminal": False,  # 是否为类 Unix 终端（即使在 Windows 上）
+        "is_git_bash": False,  # Added Git Bash detection
+        "is_unix_like_terminal": False,  # Whether it's a Unix-like terminal (even on Windows)
     }
 
-    # 1. 检测 Git Bash（优先级最高）
+    # 1. Detect Git Bash (highest priority)
     try:
-        # Git Bash 特征：TERM 包含 "msys"/"cygwin"，或进程路径包含 "git-bash.exe"
+        # Git Bash characteristics: TERM contains "msys"/"cygwin", or process path contains "git-bash.exe"
         term = os.environ.get("TERM", "").lower()
         if "msys" in term or "cygwin" in term:
             platform["is_git_bash"] = True
             platform["is_unix_like_terminal"] = True
 
-        # 补充检测进程信息（Git Bash 窗口）
+        # Additional process info detection (Git Bash window)
         if platform["is_win"]:
             import subprocess  # nosec
 
-            # 兼容 Python 3.8+ 的 subprocess 调用
-            # tasklist 是 Windows 系统内置命令，参数固定且安全
+            # Python 3.8+ compatible subprocess call
+            # tasklist is Windows built-in command, fixed parameters and safe
             result = subprocess.run(
                 ["tasklist", "/fi", "PID eq {}".format(os.getpid()), "/fo", "csv"],  # nosec
                 capture_output=True,
@@ -48,29 +48,29 @@ def _detect_platform_and_terminal() -> Dict[str, bool]:
                 platform["is_git_bash"] = True
                 platform["is_unix_like_terminal"] = True
     except (ImportError, subprocess.SubprocessError, OSError):
-        # 静默失败，不影响核心逻辑
+        # Silent failure, doesn't affect core logic
         pass
 
-    # 2. 检测 MSYS2/MINGW
+    # 2. Detect MSYS2/MINGW
     msys_env = os.environ.get("MSYSTEM", "").lower()
     if msys_env or platform["is_git_bash"]:
         platform["is_msys2"] = True
         platform["is_mingw"] = "mingw" in msys_env
         platform["is_unix_like_terminal"] = True
 
-    # 3. Cygwin 视为类 Unix 环境
+    # 3. Cygwin is treated as Unix-like environment
     if platform["is_cygwin"]:
         platform["is_win"] = False
         platform["is_unix_like_terminal"] = True
 
-    # 4. Unix 系统默认是类 Unix 终端
+    # 4. Unix systems are Unix-like terminals by default
     if platform["is_mac"] or platform["is_linux"]:
         platform["is_unix_like_terminal"] = True
 
     return platform
 
 
-# 初始化平台检测（兼容 Python 3.8+）
+# Initialize platform detection (Python 3.8+ compatible)
 _PLATFORM = _detect_platform_and_terminal()
 _WIN = _PLATFORM["is_win"]
 _CYGWIN = _PLATFORM["is_cygwin"]
@@ -78,7 +78,7 @@ _MSYS2 = _PLATFORM["is_msys2"]
 _GIT_BASH = _PLATFORM["is_git_bash"]
 _UNIX_LIKE_TERMINAL = _PLATFORM["is_unix_like_terminal"]
 
-# -------------------------- 全局状态（精准管理，避免覆盖） --------------------------
+# -------------------------- Global State (Precise Management, Avoid Overwriting) --------------------------
 State = Dict[str, Union[int, bool, None]]
 _state: State = {
     "orig_stdout_mode": None,
@@ -88,20 +88,20 @@ _state: State = {
     "init_called": False,
 }
 
-# Windows API 常量
+# Windows API constants
 STD_OUTPUT_HANDLE: int = -11
 STD_ERROR_HANDLE: int = -12
 ENABLE_VIRTUAL_TERMINAL_PROCESSING: int = 0x0004
 
-# -------------------------- Windows 控制台操作（兼容 Python 3.8+） --------------------------
+# -------------------------- Windows Console Operations (Python 3.8+ compatible) --------------------------
 
 
 def _get_win_console_mode(handle: int) -> Union[int, None]:
-    """获取 Windows 控制台模式（无副作用）"""
+    """Get Windows console mode (no side effects)"""
     if not _WIN or handle == -1 or _UNIX_LIKE_TERMINAL:
         return None
     try:
-        from ctypes import windll, c_ulong, byref
+        from ctypes import windll, c_ulong, byref  # type: ignore[attr-defined]
 
         kernel32 = windll.kernel32
         mode = c_ulong()
@@ -109,34 +109,34 @@ def _get_win_console_mode(handle: int) -> Union[int, None]:
             return mode.value
         return None
     except (ImportError, AttributeError, OSError) as e:
-        warnings.warn(f"读取控制台模式失败: {e}")
+        warnings.warn(f"Failed to read console mode: {e}")
         return None
 
 
 def _set_win_console_mode(handle: int, mode: int) -> bool:
-    """设置 Windows 控制台模式"""
+    """Set Windows console mode"""
     if not _WIN or handle == -1 or _UNIX_LIKE_TERMINAL:
         return False
     try:
-        from ctypes import windll, c_ulong
+        from ctypes import windll, c_ulong  # type: ignore[attr-defined]
 
         kernel32 = windll.kernel32
         return bool(kernel32.SetConsoleMode(handle, c_ulong(mode)))
     except (ImportError, AttributeError, OSError) as e:
-        warnings.warn(f"设置控制台模式失败: {e}")
+        warnings.warn(f"Failed to set console mode: {e}")
         return False
 
 
 def _enable_win_ansi() -> bool:
-    """启用 Windows VT 支持（仅对原生 CMD/PowerShell 生效）"""
-    # Git Bash/MSYS2/Cygwin 直接返回 True（无需启用 VT）
+    """Enable Windows VT support (only for native CMD/PowerShell)"""
+    # Git Bash/MSYS2/Cygwin directly return True (no need to enable VT)
     if _UNIX_LIKE_TERMINAL or not _WIN:
         return True
     if _state["ansi_enabled"]:
         return True
 
     try:
-        from ctypes import windll
+        from ctypes import windll  # type: ignore[attr-defined]
 
         kernel32 = windll.kernel32
         stdout_handle = kernel32.GetStdHandle(STD_OUTPUT_HANDLE)
@@ -161,19 +161,19 @@ def _enable_win_ansi() -> bool:
         _state["ansi_enabled"] = stdout_ok or stderr_ok
         return bool(_state["ansi_enabled"])
     except Exception as e:
-        warnings.warn(f"启用 Windows ANSI 失败: {e}")
+        warnings.warn(f"Failed to enable Windows ANSI: {e}")
         return False
 
 
 def _disable_win_ansi() -> bool:
-    """恢复 Windows 控制台原始模式"""
+    """Restore Windows console original mode"""
     if _UNIX_LIKE_TERMINAL or not _WIN:
         return True
     if _state["orig_stdout_mode"] is None and _state["orig_stderr_mode"] is None:
         return True
 
     try:
-        from ctypes import windll
+        from ctypes import windll  # type: ignore[attr-defined]
 
         kernel32 = windll.kernel32
         stdout_handle = kernel32.GetStdHandle(STD_OUTPUT_HANDLE)
@@ -193,18 +193,18 @@ def _disable_win_ansi() -> bool:
 
         success = stdout_ok and stderr_ok
         if not success:
-            warnings.warn("恢复 Windows 控制台模式失败")
+            warnings.warn("Failed to restore Windows console mode")
         return success
     except (ImportError, AttributeError, OSError) as e:
-        warnings.warn(f"恢复控制台模式异常: {e}")
+        warnings.warn(f"Exception restoring console mode: {e}")
         return False
 
 
-# -------------------------- 颜色控制（兼容 Python 3.8+） --------------------------
+# -------------------------- Color Control (Python 3.8+ compatible) --------------------------
 
 
 def _check_term_support_color() -> bool:
-    """检查终端是否支持颜色"""
+    """Check if terminal supports color"""
     term = os.environ.get("TERM", "").lower()
     if term in ("dumb", ""):
         return False
@@ -212,42 +212,42 @@ def _check_term_support_color() -> bool:
 
 
 def should_colorize() -> bool:
-    """判断是否启用颜色输出（无副作用，兼容 Python 3.8+）"""
-    # 1. NO_COLOR 优先级最高
+    """Determine whether to enable color output (no side effects, Python 3.8+ compatible)"""
+    # 1. NO_COLOR has highest priority
     if os.environ.get("NO_COLOR") is not None:
         return False
-    # 2. FORCE_COLOR 强制启用
+    # 2. FORCE_COLOR forces enable
     if os.environ.get("FORCE_COLOR") is not None:
         return True
-    # 3. Git Bash/MSYS2/Cygwin 直接启用
+    # 3. Git Bash/MSYS2/Cygwin directly enable
     if _UNIX_LIKE_TERMINAL:
         return True
-    # 4. Windows 原生终端检查 ANSI 启用状态
+    # 4. Windows native terminal checks ANSI enable status
     if _WIN:
         return bool(_state.get("ansi_enabled", False))
-    # 5. Unix 系统检查 TTY 和 TERM
+    # 5. Unix system checks TTY and TERM
     if not sys.stdout.isatty():
         return False
     return _check_term_support_color()
 
 
-# -------------------------- 动态颜色类（兼容 Python 3.8+） --------------------------
+# -------------------------- Dynamic Color Class (Python 3.8+ compatible) --------------------------
 
 
 class Color:
-    """简化的动态颜色类，兼容 Python 3.8+"""
+    """Simplified dynamic color class, Python 3.8+ compatible"""
 
     def __init__(self, codes: Dict[str, str]):
         self._codes = codes
 
     def __getattr__(self, name: str) -> str:
-        """动态返回颜色码，每次访问都检查启用状态"""
+        """Dynamically return color code, check enable status each access"""
         if should_colorize():
             return self._codes.get(name, "")
         return ""
 
 
-# 颜色码映射（兼容标准 ANSI）
+# Color code mapping (compatible with standard ANSI)
 _fore_codes = {
     "BLACK": "\033[30m",
     "RED": "\033[91m",
@@ -283,13 +283,13 @@ _style_codes = {
     "RESET_ALL": "\033[0m",
 }
 
-# 公开实例
+# Public instances
 Fore = Color(_fore_codes)
 Back = Color(_back_codes)
 Style = Color(_style_codes)
 
-# -------------------------- 便捷导出（兼容 Python 3.8+） --------------------------
-# 简化便捷属性，避免 property 兼容性问题
+# -------------------------- Convenience Exports (Python 3.8+ compatible) --------------------------
+# Simplified convenience properties, avoid property compatibility issues
 
 
 def END() -> str:
@@ -320,14 +320,14 @@ def HEADER() -> str:
     return Fore.MAGENTA
 
 
-# -------------------------- 公开接口（幂等，兼容 Python 3.8+） --------------------------
+# -------------------------- Public Interface (Idempotent, Python 3.8+ compatible) --------------------------
 
 
 def init() -> None:
-    """初始化颜色支持（仅对 Windows 原生终端生效）"""
+    """Initialize color support (only for Windows native terminal)"""
     if _state["init_called"]:
         return
-    # 仅 Windows 原生终端（非 Git Bash/MSYS2/Cygwin）需要启用 VT
+    # Only Windows native terminal (not Git Bash/MSYS2/Cygwin) needs VT enabled
     if _WIN and not _UNIX_LIKE_TERMINAL:
         _enable_win_ansi()
         if not _state["deinit_registered"]:
@@ -337,7 +337,7 @@ def init() -> None:
 
 
 def deinit() -> None:
-    """清理控制台状态"""
+    """Clean up console state"""
     if not _state["init_called"]:
         return
     if _WIN and not _UNIX_LIKE_TERMINAL:
@@ -346,33 +346,33 @@ def deinit() -> None:
     _state["deinit_registered"] = False
 
 
-# -------------------------- 测试代码（兼容 Python 3.8+） --------------------------
+# -------------------------- Test Code (Python 3.8+ compatible) --------------------------
 if __name__ == "__main__":
-    # 初始化
+    # Initialize
     init()
 
-    # 打印检测信息（帮助调试）
-    print("=== 终端检测信息 ===")
-    print(f"Windows 系统: {_WIN}")
+    # Print detection info (help debugging)
+    print("=== Terminal Detection Info ===")
+    print(f"Windows system: {_WIN}")
     print(f"Git Bash: {_GIT_BASH}")
     print(f"MSYS2: {_MSYS2}")
-    print(f"类 Unix 终端: {_UNIX_LIKE_TERMINAL}")
-    print(f"颜色启用状态: {should_colorize()}")
-    print(f"TERM 环境变量: {os.environ.get('TERM', '未设置')}")
+    print(f"Unix-like terminal: {_UNIX_LIKE_TERMINAL}")
+    print(f"Color enabled: {should_colorize()}")
+    print(f"TERM environment variable: {os.environ.get('TERM', 'Not set')}")
 
-    # 测试颜色输出
-    print("\n=== 颜色测试 ===")
-    print(f"{Fore.RED}红色文字{Style.RESET_ALL}")
-    print(f"{Back.GREEN}绿色背景{Style.RESET_ALL}")
-    print(f"{Style.BRIGHT}{Fore.BLUE}亮蓝色粗体{Style.RESET_ALL}")
-    print(f"{Fore.MAGENTA}{Style.UNDERLINE}紫色下划线{Style.RESET_ALL}")
+    # Test color output
+    print("\n=== Color Test ===")
+    print(f"{Fore.RED}Red text{Style.RESET_ALL}")
+    print(f"{Back.GREEN}Green background{Style.RESET_ALL}")
+    print(f"{Style.BRIGHT}{Fore.BLUE}Bright blue bold{Style.RESET_ALL}")
+    print(f"{Fore.MAGENTA}{Style.UNDERLINE}Purple underline{Style.RESET_ALL}")
 
-    # 测试动态禁用
+    # Test dynamic disable
     os.environ["NO_COLOR"] = "1"
-    print("\n=== 禁用 NO_COLOR 后 ===")
-    print(f"{Fore.RED}红色文字（应无颜色）{Style.RESET_ALL}")
+    print("\n=== After NO_COLOR disabled ===")
+    print(f"{Fore.RED}Red text (should have no color){Style.RESET_ALL}")
 
-    # 清理
+    # Cleanup
     del os.environ["NO_COLOR"]
     if "FORCE_COLOR" in os.environ:
         del os.environ["FORCE_COLOR"]
