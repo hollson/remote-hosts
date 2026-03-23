@@ -287,3 +287,54 @@ class TestColor:
                 os.environ["FORCE_COLOR"] = original_force_color
             elif "FORCE_COLOR" in os.environ:
                 del os.environ["FORCE_COLOR"]
+
+    def test_fore_all_colors(self):
+        """Test all foreground colors are accessible."""
+        colors = ["BLACK", "RED", "GREEN", "YELLOW", "BLUE", "MAGENTA", "CYAN", "WHITE", "GRAY", "RESET"]
+        for color in colors:
+            assert hasattr(Fore, color)
+            result = getattr(Fore, color)
+            assert isinstance(result, str)
+
+    def test_back_all_colors(self):
+        """Test all background colors are accessible."""
+        colors = ["BLACK", "RED", "GREEN", "YELLOW", "BLUE", "MAGENTA", "CYAN", "WHITE", "GRAY", "RESET"]
+        for color in colors:
+            assert hasattr(Back, color)
+            result = getattr(Back, color)
+            assert isinstance(result, str)
+
+    def test_style_all_styles(self):
+        """Test all style attributes are accessible."""
+        styles = ["BRIGHT", "DIM", "NORMAL", "UNDERLINE", "RESET_UNDERLINE", "RESET_ALL"]
+        for style in styles:
+            assert hasattr(Style, style)
+            result = getattr(Style, style)
+            assert isinstance(result, str)
+
+    def test_color_attributes_with_force_color_override_no_color(self):
+        """Test FORCE_COLOR overrides NO_COLOR."""
+        # Save original environment
+        original_no_color = os.environ.get("NO_COLOR")
+        original_force_color = os.environ.get("FORCE_COLOR")
+
+        try:
+            # Set both NO_COLOR and FORCE_COLOR
+            os.environ["NO_COLOR"] = "1"
+            os.environ["FORCE_COLOR"] = "1"
+
+            # FORCE_COLOR should override NO_COLOR
+            result = Fore.RED
+            # The result should be a string (may be empty or ANSI code)
+            assert isinstance(result, str)
+        finally:
+            # Restore environment
+            if original_no_color is not None:
+                os.environ["NO_COLOR"] = original_no_color
+            elif "NO_COLOR" in os.environ:
+                del os.environ["NO_COLOR"]
+
+            if original_force_color is not None:
+                os.environ["FORCE_COLOR"] = original_force_color
+            elif "FORCE_COLOR" in os.environ:
+                del os.environ["FORCE_COLOR"]

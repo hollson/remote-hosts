@@ -122,6 +122,170 @@ class TestLocaleUtils:
         assert "c" in INVALID_LOCALES
         assert "posix" in INVALID_LOCALES
 
+    def test_parse_locale_str_with_cp65001(self):
+        """Test parse_locale_str with cp65001 encoding."""
+        lang, region, encoding = _LocaleUtils.parse_locale_str("zh_CN.cp65001")
+        assert lang == "zh"
+        assert region == "CN"
+        assert encoding == "UTF-8"
+
+    def test_parse_locale_str_with_utf8_variants(self):
+        """Test parse_locale_str with utf8 encoding variants."""
+        lang1, region1, encoding1 = _LocaleUtils.parse_locale_str("zh_CN.utf8")
+        assert encoding1 == "UTF-8"
+
+        lang2, region2, encoding2 = _LocaleUtils.parse_locale_str("zh_CN.utf-8")
+        assert encoding2 == "UTF-8"
+
+    def test_parse_locale_str_with_invalid_encoding(self):
+        """Test parse_locale_str with invalid encoding falls back to UTF-8."""
+        lang, region, encoding = _LocaleUtils.parse_locale_str("zh_CN.invalid")
+        assert encoding == "UTF-8"
+
+    def test_parse_locale_str_with_hyphen_separator(self):
+        """Test parse_locale_str with hyphen separator."""
+        lang, region, encoding = _LocaleUtils.parse_locale_str("zh-CN.UTF-8")
+        assert lang == "zh"
+        assert region == "CN"
+        assert encoding == "UTF-8"
+
+    def test_parse_locale_str_with_only_lang(self):
+        """Test parse_locale_str with only language."""
+        lang, region, encoding = _LocaleUtils.parse_locale_str("zh")
+        assert lang == "zh"
+        assert region == ""
+        assert encoding == "UTF-8"
+
+    def test_parse_locale_str_with_empty_string(self):
+        """Test parse_locale_str with empty string."""
+        lang, region, encoding = _LocaleUtils.parse_locale_str("")
+        assert lang == ""
+        assert region == ""
+        assert encoding == ""
+
+    def test_parse_locale_str_with_whitespace(self):
+        """Test parse_locale_str with whitespace."""
+        lang, region, encoding = _LocaleUtils.parse_locale_str("  ")
+        assert lang == ""
+        assert region == ""
+        assert encoding == ""
+
+    def test_normalize_code_with_parentheses(self):
+        """Test normalize_code with parentheses."""
+        result = _LocaleUtils.normalize_code("Chinese (Simplified)", LANG_MAP, "en")
+        assert result == "zh"
+
+    def test_normalize_code_with_underscore(self):
+        """Test normalize_code with underscore."""
+        result = _LocaleUtils.normalize_code("zh_CN", LANG_MAP, "en")
+        # zh_CN becomes zh-cn, which is not in LANG_MAP, so returns default
+        assert result == "en"
+
+    def test_normalize_code_with_dot_separator(self):
+        """Test normalize_code with dot separator."""
+        result = _LocaleUtils.normalize_code("zh.cn", LANG_MAP, "en")
+        assert result == "zh"
+
+    def test_auto_complete_with_all_empty(self):
+        """Test auto_complete with all empty parameters."""
+        lang, region, encoding = _LocaleUtils.auto_complete("", "", "")
+        assert lang == ""
+        assert region == ""  # Empty lang means no default region
+        assert encoding == "UTF-8"
+
+    def test_auto_complete_with_only_region(self):
+        """Test auto_complete with only region."""
+        lang, region, encoding = _LocaleUtils.auto_complete("", "CN", "")
+        assert lang == ""
+        assert region == "CN"
+        assert encoding == "UTF-8"
+
+    def test_auto_complete_with_only_encoding(self):
+        """Test auto_complete with only encoding."""
+        lang, region, encoding = _LocaleUtils.auto_complete("", "", "UTF-8")
+        assert lang == ""
+        assert region == ""  # Empty lang means no default region
+        assert encoding == "UTF-8"
+
+    def test_auto_complete_with_lang_only(self):
+        """Test auto_complete with only lang."""
+        lang, region, encoding = _LocaleUtils.auto_complete("en", "", "")
+        assert lang == "en"
+        assert region == "US"
+        assert encoding == "UTF-8"
+
+    def test_auto_complete_with_unknown_lang(self):
+        """Test auto_complete with unknown language."""
+        lang, region, encoding = _LocaleUtils.auto_complete("xx", "", "")
+        assert lang == "xx"
+        assert region == "US"
+        assert encoding == "UTF-8"
+
+    def test_parse_locale_str_with_uppercase_encoding(self):
+        """Test parse_locale_str with uppercase encoding."""
+        lang, region, encoding = _LocaleUtils.parse_locale_str("zh_CN.UTF8")
+        assert lang == "zh"
+        assert region == "CN"
+        assert encoding == "UTF8"  # Not normalized to UTF-8
+
+    def test_parse_locale_str_with_mixed_case_encoding(self):
+        """Test parse_locale_str with mixed case encoding."""
+        lang, region, encoding = _LocaleUtils.parse_locale_str("zh_CN.Utf-8")
+        assert lang == "zh"
+        assert region == "CN"
+        assert encoding == "Utf-8"  # Not normalized to UTF-8
+
+    def test_parse_locale_str_with_region_only(self):
+        """Test parse_locale_str with region only."""
+        lang, region, encoding = _LocaleUtils.parse_locale_str("_CN.UTF-8")
+        assert lang == ""
+        assert region == "CN"
+        assert encoding == "UTF-8"
+
+    def test_parse_locale_str_with_multiple_underscores(self):
+        """Test parse_locale_str with multiple underscores."""
+        lang, region, encoding = _LocaleUtils.parse_locale_str("zh_CN_CN.UTF-8")
+        assert lang == "zh"
+        assert region == "CN"
+        assert encoding == "UTF-8"
+
+    def test_normalize_code_with_whitespace(self):
+        """Test normalize_code with whitespace."""
+        result = _LocaleUtils.normalize_code("  zh  ", LANG_MAP, "en")
+        assert result == "zh"
+
+    def test_normalize_code_with_special_chars(self):
+        """Test normalize_code with special characters."""
+        result = _LocaleUtils.normalize_code("zh-cn.", LANG_MAP, "en")
+        assert result == "en"  # After cleaning, zh-cn. is not in LANG_MAP
+
+    def test_auto_complete_preserves_region(self):
+        """Test auto_complete preserves existing region."""
+        lang, region, encoding = _LocaleUtils.auto_complete("zh", "TW", "")
+        assert lang == "zh"
+        assert region == "TW"
+        assert encoding == "UTF-8"
+
+    def test_auto_complete_preserves_encoding(self):
+        """Test auto_complete preserves existing encoding."""
+        lang, region, encoding = _LocaleUtils.auto_complete("en", "", "ASCII")
+        assert lang == "en"
+        assert region == "US"
+        assert encoding == "ASCII"
+
+    def test_get_locale_info_structure(self):
+        """Test get_locale_info returns correct structure."""
+        locale_info = get_locale_info()
+        parts = locale_info.locale_str.split(".")
+        assert len(parts) == 2
+        lang_region = parts[0]
+        encoding = parts[1]
+        lang_region_parts = lang_region.split("_")
+        assert len(lang_region_parts) == 2
+        assert len(lang_region_parts[0]) == 2
+        assert len(lang_region_parts[1]) == 2
+        assert encoding == "UTF-8"
+
 
 if __name__ == "__main__":
     pytest.main([__file__])
