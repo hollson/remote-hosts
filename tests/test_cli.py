@@ -8,7 +8,7 @@ import tempfile
 from io import StringIO
 from unittest.mock import patch, MagicMock
 from remote_hosts.cli import print_hosts, Config, DEFAULT_SAMPLE_MD5, _compute_md5
-from remote_hosts.color import RED, GREEN, YELLOW, BLUE, HEADER, END, BOLD
+from remote_hosts.color import RED, GREEN, YELLOW, BLUE, END, BOLD
 
 
 class TestColor:
@@ -16,13 +16,18 @@ class TestColor:
 
     def test_color_constants(self):
         """Test color constants are defined (empty in non-TTY environment)."""
-        assert RED in ("", "\033[91m")
-        assert GREEN in ("", "\033[92m")
-        assert YELLOW in ("", "\033[93m")
-        assert BLUE in ("", "\033[94m")
-        assert HEADER in ("", "\033[95m")
-        assert END in ("", "\033[0m")
-        assert BOLD in ("", "\033[1m")
+        # 颜色函数返回动态值，可能是空字符串或ANSI码
+        from remote_hosts.color import Fore, Style
+
+        # 调用颜色函数获取实际值
+        assert RED() in ("", "\033[91m")
+        assert GREEN() in ("", "\033[92m")
+        assert YELLOW() in ("", "\033[93m")
+        assert BLUE() in ("", "\033[94m")
+        assert END() in ("", "\033[0m")
+        assert BOLD() in ("", "\033[1m")
+        # Fore.MAGENTA 替代 HEADER
+        assert Fore.MAGENTA in ("", "\033[95m")
 
 
 class TestPrintHosts:

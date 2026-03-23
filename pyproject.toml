@@ -103,6 +103,14 @@ show_error_codes = true         # 显示错误代码
 warn_return_any = true          # 警告返回 any 类型
 warn_unused_ignores = false     # 禁用未使用的忽略警告
 
+# Pyright/基于 Right 类型检查设置
+[tool.pyright]
+pythonVersion = "3.8"           # 目标 Python 版本
+reportDeprecated = "warning"    # 弃用警告级别
+typeCheckingMode = "basic"      # 类型检查模式
+# 禁用 typing 模块弃用警告，因为我们需要兼容 Python 3.8+
+reportDeprecatedType = "none"
+
 # Pytest 配置选项
 [tool.pytest.ini_options]
 testpaths = ["tests"]         # 测试目录

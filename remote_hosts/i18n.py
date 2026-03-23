@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 
-from .locale_utils import get_locale_info
+from .locale import get_locale_info
 
 
 # Language detection
-def get_system_language():
+def get_system_language() -> str:
     """Get system language setting"""
     locale_info = get_locale_info()
     return locale_info.lang
@@ -111,7 +111,7 @@ TEXT = {
 
 
 # Get translated text
-def _(key, **kwargs):
+def _(key: str, **kwargs) -> str:
     """Get translated text"""
     if key in TEXT.get(LANG, TEXT["en"]):
         return TEXT[LANG][key].format(**kwargs)

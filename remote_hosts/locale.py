@@ -2,7 +2,7 @@ import locale
 import os
 import platform
 from dataclasses import dataclass
-from typing import Optional, Tuple
+from typing import Tuple, Union
 
 LANG_MAP = {
     "chinese (simplified)": "zh",
@@ -93,7 +93,7 @@ class _LocaleUtils:
     """Internal utility class for locale handling functions"""
 
     @staticmethod
-    def normalize_code(code: Optional[str], map_dict: dict, default: str) -> str:
+    def normalize_code(code: Union[str, None], map_dict: dict, default: str) -> str:
         if not code or not code.strip():
             return default
         clean_code = str(code).lower().replace("(", "").replace(")", "").replace("_", "-").strip()
@@ -232,7 +232,7 @@ def get_locale_info() -> LocaleInfo:
     return LocaleInfo(locale_str=locale_str, lang=final_lang, region=final_region, encoding=final_encoding)
 
 
-def _get_windows_locale_name() -> Optional[str]:
+def _get_windows_locale_name() -> Union[str, None]:
     """Get Windows locale name from registry or system API"""
     locale_name = None
 

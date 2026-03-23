@@ -2,7 +2,7 @@
 """Tests for locale utilities."""
 
 import pytest
-from remote_hosts.locale_utils import (
+from remote_hosts.locale import (
     get_locale_info,
     LocaleInfo,
     _LocaleUtils,

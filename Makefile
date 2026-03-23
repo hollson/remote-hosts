@@ -40,7 +40,20 @@ bandit:
 	bandit -r remote_hosts/
 
 pre-commit:
-	python3 -m pre_commit run --all-files
+	@set -e; \
+	for X in python3 python py; do \
+		if command -v $$X >/dev/null 2>&1; then \
+			if $$X -m pre_commit --version >/dev/null 2>&1; then \
+				PY=$$X; \
+				break; \
+			fi; \
+		fi; \
+	done; \
+	if [ -z "$$PY" ]; then \
+		echo "ERROR: no Python with pre_commit module found; try 'python -m pip install pre-commit'" >&2; \
+		exit 1; \
+	fi; \
+	$$PY -m pre_commit run --all-files
 
 clean:
 	rm -rf build/
